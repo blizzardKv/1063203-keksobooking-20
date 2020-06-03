@@ -17,13 +17,7 @@
   var map = document.querySelector('.map');
   map.classList.remove('map--faded');
   var mapPinsArea = document.querySelector('.map__pins');
-  var pinTemplate = document.getElementById('pin').content.querySelector('.map__pin');
-
-  // Выводим рандомный элемент в массиве. Для этого возвращаем элемент с i = 0 до i = array.length - 1;
-  // Т.к. Math.floor округляет вниз, а Math.random(max) = 0,9 в периоде.
-  function getRandomElementFromArray(array) {
-    return array[Math.floor(Math.random() * array.length)];
-  }
+  var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 
   // Выводим рандомное число
   // Добавляем +1 т.к. Math.floor округляет вниз, а Math.random(max) = 0,9 в периоде.
@@ -31,12 +25,18 @@
     return Math.floor(Math.random() * maxNumber + 1);
   }
 
+  // Выводим рандомный элемент в массиве. Для этого возвращаем элемент с i = 0 до i = array.length - 1;
+  // Т.к. Единица не входит в рандом, а Math.random(max) = 0,9 в периоде.
+  function getRandomElementFromArray(array) {
+    return array[getRandomNumber(array.length) - 1];
+  }
+
   // Выводим рандомное количество элементов в features. Проверяем циклом, чтобы минимум 1 элемент всегда выводился в перечень преимуществ.
   // Далее получаем рандомное свойство, проверяем есть ли оно в массиве, если нет - то пушим в конец массива. Возвращаем массив.
   function getRandomNumberOfElementsFromArray(array) {
     var elements = [];
 
-    for (var i = 0; i < Math.round(Math.random() * array.length + 1); i++) {
+    for (var i = 0; i < getRandomNumber(array.length); i++) {
       var option = getRandomElementFromArray(array);
       if (elements.indexOf(option) === -1) {
         elements.push(option);
@@ -50,11 +50,11 @@
     var dataList = [];
 
     for (var i = 0; i < count; i++) {
-      var locationX = Math.floor(Math.random() * mapPinsArea.offsetWidth + 1);
+      var locationX = getRandomNumber(mapPinsArea.offsetWidth) + 1;
 
       // Получаем рандомную координату по Y. Для этого берем минимальное значение (чтобы в любом случае было 130)
       // И добавляем интервал в 500 для вычисления координаты по У. Т.е. maxY может быть только 630.
-      var locationY = Math.floor(MIN_COORDINATE_Y + (Math.random() * (MAX_COORDINATE_Y - MIN_COORDINATE_Y)));
+      var locationY = Math.floor(MIN_COORDINATE_Y + (Math.random() * (MAX_COORDINATE_Y - MIN_COORDINATE_Y) + 1));
       var dataForPins = {
         'author': {
           'avatar': 'img/avatars/user0' + (i + 1) + '.png'
