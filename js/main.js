@@ -1,14 +1,14 @@
 'use strict';
 (function () {
-  var OFFER_NUMBER = 8;
+  var OFFER_NUMBERS = 8;
   var OFFER_TITLES = ['Шикарная квартира', 'Уютная комната', 'Огромный дворец', 'Просторное бунгало'];
   var HOUSE_TYPES = ['palace', 'flat', 'house', 'bungalo'];
   var MAX_ROOMS = 10;
   var MAX_GUESTS = 15;
-  var CHECK_IN = ['12:00', '13:00', '14:00'];
-  var CHECK_OUT = ['12:00', '13:00', '14:00'];
+  var CHECK_INS = ['12:00', '13:00', '14:00'];
+  var CHECK_OUTS = ['12:00', '13:00', '14:00'];
   var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
-  var DESCRIPTION = ['Шикарная квартира', 'Уютная комната', 'Огромный дворец', 'Просторное бунгало'];
+  var DESCRIPTIONS = ['Шикарная квартира', 'Уютная комната', 'Огромный дворец', 'Просторное бунгало'];
   var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
   var MIN_COORDINATE_Y = 130;
   var MAX_COORDINATE_Y = 630;
@@ -66,10 +66,10 @@
           'type': getRandomElementFromArray(HOUSE_TYPES),
           'rooms': getRandomNumber(MAX_ROOMS),
           'guests': getRandomNumber(MAX_GUESTS),
-          'checkin': getRandomElementFromArray(CHECK_IN),
-          'checkout': getRandomElementFromArray(CHECK_OUT),
+          'checkin': getRandomElementFromArray(CHECK_INS),
+          'checkout': getRandomElementFromArray(CHECK_OUTS),
           'features': getRandomNumberOfElementsFromArray(FEATURES),
-          'description': getRandomElementFromArray(DESCRIPTION),
+          'description': getRandomElementFromArray(DESCRIPTIONS),
           'photos': getRandomElementFromArray(PHOTOS)
         },
         'location': {
@@ -111,5 +111,5 @@
   }
 
   // Запускаем цепочку функций по генерации пинов.
-  generatePins(createMocksForData(OFFER_NUMBER));
+  generatePins(createMocksForData(OFFER_NUMBERS));
 })();
