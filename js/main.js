@@ -1,6 +1,6 @@
 'use strict';
 (function () {
-  var OFFER_NUMBERS = 8;
+  var OFFERS_NUMBER = 8;
   var OFFER_TITLES = ['Шикарная квартира', 'Уютная комната', 'Огромный дворец', 'Просторное бунгало'];
   var HOUSE_TYPES = ['palace', 'flat', 'house', 'bungalo'];
   var MAX_ROOMS = 10;
@@ -111,5 +111,5 @@
   }
 
   // Запускаем цепочку функций по генерации пинов.
-  generatePins(createMocksForData(OFFER_NUMBERS));
+  generatePins(createMocksForData(OFFERS_NUMBER));
 })();
