@@ -31,18 +31,16 @@
     return array[getRandomNumber(array.length) - 1];
   }
 
-  // Выводим рандомное количество элементов в features. Проверяем циклом, чтобы минимум 1 элемент всегда выводился в перечень преимуществ.
-  // Далее получаем рандомное свойство, проверяем есть ли оно в массиве, если нет - то пушим в конец массива. Возвращаем массив.
-  function getRandomNumberOfElementsFromArray(array) {
-    var elements = [];
+  // Получаем массив рандомной длины через Array.Of
+  // Шаффлим дефолтный массив, чтобы значения не повторялись в каждой итерации
+  // Возвращаем новый массив, начиная с первого элемента и до элемента с индексом emptyArray
+  function getRandomNumberOfElementsFromArray(arr) {
+    var emptyArrayWithRandomLenght = Array.of(getRandomNumber(arr.length));
+    return shuffleArray(arr).slice(0, emptyArrayWithRandomLenght);
+  }
 
-    for (var i = 0; i < getRandomNumber(array.length); i++) {
-      var option = getRandomElementFromArray(array);
-      if (elements.indexOf(option) === -1) {
-        elements.push(option);
-      }
-    }
-    return elements;
+  function shuffleArray(arr) {
+    return arr.sort(() => Math.random() - 0.5);
   }
 
   // Создаем функцию создания шаблона массива с моками данных.
