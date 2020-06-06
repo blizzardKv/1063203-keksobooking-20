@@ -32,7 +32,7 @@
   }
 
   // Получаем массив рандомной длины через Array.Of
-  // Шаффлим дефолтный массив, чтобы значения не повторялись в каждой итерации
+  // Шаффлим дефолтный массив, чтобы значения перемешивались в каждой итерации
   // Возвращаем новый массив, начиная с первого элемента и до элемента с индексом emptyArray
   function getRandomNumberOfElementsFromArray(arr) {
     var emptyArrayWithRandomLenght = Array.of(getRandomNumber(arr.length));
