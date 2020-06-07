@@ -40,9 +40,9 @@
     return shuffleArray(arr).slice(0, emptyArrayWithRandomLenght);
   }
   function shuffleArray(arr) {
-    return arr.sort(function() {
+    return arr.sort(function () {
       return Math.random() - 0.5;
-    })
+    });
   }
 
   // Создаем функцию создания шаблона массива с моками данных.
@@ -234,23 +234,13 @@
     return noun.offer.guests === 1 ? 'гостя' : 'гостей';
   }
 
-  function getFeaturesImages(feature) {
-    var opt = '';
-    var wifi = document.querySelector('.popup__feature--wifi');
-    var dishwasher = document.querySelector('.popup__feature--dishwasher');
-    var parking = document.querySelector('.popup__feature--parking');
-    var washer = document.querySelector('.popup__feature--washer');
-    var elevator = document.querySelector('.popup__feature--elevator');
-    var conditioner = document.querySelector('.popup__feature--conditioner');
-  }
-
   // Создаем карточку для первого объявления. Создаем пустой фрагмент, заполняем информацией из функции выше, вставляем его.
   function createCard(cardInfo) {
     var fragment = document.createDocumentFragment();
     var cardContainer = document.querySelector('.map__filters-container');
 
     fragment.appendChild(fillCardWithInformation(cardInfo));
-    cardContainer.appendChild(fragment)
+    cardContainer.appendChild(fragment);
   }
 
   createCard(createMocksForData(OFFERS_NUMBER)[0]);
