@@ -112,20 +112,32 @@
   // Запускаем цепочку функций по генерации пинов.
   generatePins(createMocksForData(OFFERS_NUMBER));
 
+  // Проверяем наличие даты для рендера.
+  // Если её нет, то скрываем элемент, куда должна была отправиться дата.
+  function checkIsDataExists(data, el) {
+    if (data.length === 0) {
+      el.style.display = 'none';
+    }
+    return data;
+  }
+
   // Функция по генерации информации для карточки объявления.
   // Клонируем имеющийся шаблон, выбираем в новом шаблоне элементы, добавляем информацию.
   function fillCardWithInformation(cardInfo) {
     var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
     var newCard = cardTemplate.cloneNode(true);
 
+    // Сделаем массив с шаблонами для конкатенации строк.
     var wordsTemplate = {
       nightCost: ' ₽/ночь.',
       pretext: ' для ',
       space: ' ',
       checkIn: 'Заезд после ',
-      checkOut: 'выезд до',
+      checkOut: 'выезд до ',
       comma: ', '
     };
+
+    // Выбираем каждый элемент в переменную
     var offerTitle = newCard.querySelector('.popup__title');
     var offerAddress = newCard.querySelector('.popup__text--address');
     var offerPrice = newCard.querySelector('.popup__text--price');
@@ -137,16 +149,17 @@
     var offerPhoto = newCard.querySelector('.popup__photos img');
     var offerAvatar = newCard.querySelector('.popup__avatar');
 
-    offerTitle.textContent = cardInfo.offer.title;
-    offerAddress.textContent = cardInfo.offer.address;
-    offerPrice.textContent = cardInfo.offer.price + wordsTemplate.nightCost;
-    offerType.textContent = translateNamesOfHouses(cardInfo);
-    offerGuestsInfo.textContent = cardInfo.offer.rooms + wordsTemplate.space + getRoomsCases(cardInfo) + wordsTemplate.pretext + cardInfo.offer.guests + wordsTemplate.space + getGuestsCases(cardInfo);
-    offerGuestsTime.textContent = wordsTemplate.checkIn + cardInfo.offer.checkin + wordsTemplate.comma + wordsTemplate.checkOut + cardInfo.offer.checkout;
-    offerDescription.textContent = cardInfo.offer.description;
-    offerFeatures.textContent = getFeaturesImages(cardInfo);
-    offerPhoto.src = cardInfo.offer.photos;
-    offerAvatar.src = cardInfo.author.avatar;
+    // Проверяем элемент на наличие даты, если она есть, рендерим)
+    offerTitle.textContent = checkIsDataExists(cardInfo.offer.title, offerTitle);
+    offerAddress.textContent = checkIsDataExists(cardInfo.offer.address, offerAddress);
+    offerPrice.textContent = checkIsDataExists(cardInfo.offer.price + wordsTemplate.nightCost, offerPrice);
+    offerType.textContent = checkIsDataExists(translateNamesOfHouses(cardInfo), offerType);
+    offerGuestsInfo.textContent = checkIsDataExists(cardInfo.offer.rooms + wordsTemplate.space + getRoomsCases(cardInfo) + wordsTemplate.pretext + cardInfo.offer.guests + wordsTemplate.space + getGuestsCases(cardInfo), offerGuestsInfo);
+    offerGuestsTime.textContent = checkIsDataExists(wordsTemplate.checkIn + cardInfo.offer.checkin + wordsTemplate.comma + wordsTemplate.checkOut + cardInfo.offer.checkout, offerGuestsTime);
+    offerDescription.textContent = checkIsDataExists(cardInfo.offer.description, offerDescription);
+    offerFeatures.textContent = checkIsDataExists(getFeaturesImages(cardInfo), offerFeatures);
+    offerPhoto.src = checkIsDataExists(cardInfo.offer.photos, offerPhoto);
+    offerAvatar.src = checkIsDataExists(cardInfo.author.avatar, offerAvatar);
 
     return newCard;
   }
@@ -170,10 +183,6 @@
       case 'palace':
         translate = 'Дворец';
         break;
-
-      default:
-        translate = 'Бездомный';
-        break
     }
 
     return translate;
@@ -212,13 +221,6 @@
     var washer = document.querySelector('.popup__feature--washer');
     var elevator = document.querySelector('.popup__feature--elevator');
     var conditioner = document.querySelector('.popup__feature--conditioner');
-
-    switch (feature.offer.features) {
-      case 'wifi':
-        opt = ' ';
-    }
-    console.log(opt);
-    return opt
   }
 
   // Создаем карточку для первого объявления. Создаем пустой фрагмент, заполняем информацией из функции выше, вставляем его.
