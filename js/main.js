@@ -145,7 +145,7 @@
     var offerGuestsInfo = newCard.querySelector('.popup__text--capacity');
     var offerGuestsTime = newCard.querySelector('.popup__text--time');
     var offerDescription = newCard.querySelector('.popup__description');
-    var offerFeatures = newCard.querySelector('.popup__feature--wifi');
+    var offerFeatures = newCard.querySelector('.popup__features');
     var offerPhoto = newCard.querySelector('.popup__photos img');
     var offerAvatar = newCard.querySelector('.popup__avatar');
 
@@ -157,7 +157,7 @@
     offerGuestsInfo.textContent = checkIsDataExists(cardInfo.offer.rooms + wordsTemplate.space + getRoomsCases(cardInfo) + wordsTemplate.pretext + cardInfo.offer.guests + wordsTemplate.space + getGuestsCases(cardInfo), offerGuestsInfo);
     offerGuestsTime.textContent = checkIsDataExists(wordsTemplate.checkIn + cardInfo.offer.checkin + wordsTemplate.comma + wordsTemplate.checkOut + cardInfo.offer.checkout, offerGuestsTime);
     offerDescription.textContent = checkIsDataExists(cardInfo.offer.description, offerDescription);
-    offerFeatures.textContent = checkIsDataExists(getFeaturesImages(cardInfo), offerFeatures);
+    offerFeatures.textContent = checkIsDataExists(cardInfo.offer.features, offerFeatures);
     offerPhoto.src = checkIsDataExists(cardInfo.offer.photos, offerPhoto);
     offerAvatar.src = checkIsDataExists(cardInfo.author.avatar, offerAvatar);
 
