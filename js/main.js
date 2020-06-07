@@ -112,15 +112,6 @@
   // Запускаем цепочку функций по генерации пинов.
   generatePins(createMocksForData(OFFERS_NUMBER));
 
-  // Проверяем наличие даты для рендера.
-  // Если её нет, то скрываем элемент, куда должна была отправиться дата.
-  function checkIsDataExists(data, el) {
-    if (data.length === 0) {
-      el.style.display = 'none';
-    }
-    return data;
-  }
-
   // Функция по генерации информации для карточки объявления.
   // Клонируем имеющийся шаблон, выбираем в новом шаблоне элементы, добавляем информацию.
   function fillCardWithInformation(cardInfo) {
@@ -157,11 +148,40 @@
     offerGuestsInfo.textContent = checkIsDataExists(cardInfo.offer.rooms + wordsTemplate.space + getRoomsCases(cardInfo) + wordsTemplate.pretext + cardInfo.offer.guests + wordsTemplate.space + getGuestsCases(cardInfo), offerGuestsInfo);
     offerGuestsTime.textContent = checkIsDataExists(wordsTemplate.checkIn + cardInfo.offer.checkin + wordsTemplate.comma + wordsTemplate.checkOut + cardInfo.offer.checkout, offerGuestsTime);
     offerDescription.textContent = checkIsDataExists(cardInfo.offer.description, offerDescription);
-    offerFeatures.textContent = checkIsDataExists(cardInfo.offer.features, offerFeatures);
+    checkIsDataExists(createFeatureWithIcon(offerFeatures, cardInfo.offer.features), offerFeatures);
     offerPhoto.src = checkIsDataExists(cardInfo.offer.photos, offerPhoto);
     offerAvatar.src = checkIsDataExists(cardInfo.author.avatar, offerAvatar);
 
     return newCard;
+  }
+
+  // Добавляем рендер каждой фичи в зависимости от получаемой даты.
+  // Создаем пустой фрагмент, проходим по коллекции фич методом forEach.
+  // "Стираем" данные в elem - с помощью textContent, иначе сохраняются дефолтные картинки фич.
+  // За каждый имеющийся элемент коллекции - создаем li с заданными классами в соответствии с шаблоном
+  // Вставляем полученную лишку в пустой докФрагмент. Далее добавляем получившийся докФрагмент в элемент шаблона.
+  function createFeatureWithIcon(elem, features) {
+    var fragment = document.createDocumentFragment();
+    elem.textContent = '';
+
+    features.forEach((feature) => {
+      var elemContainer = document.createElement('li');
+      var featureClass = 'popup__feature--' + feature;
+      elemContainer.classList.add('popup__feature', featureClass);
+      fragment.appendChild(elemContainer);
+    });
+
+    return elem.appendChild(fragment);
+  }
+
+  // Проверяем наличие даты для рендера.
+  // Если её нет или она undefined, то скрываем элемент, куда должна была отправиться дата.
+  function checkIsDataExists(data, el) {
+    if (data.length === 0 || data.length === 'undefined') {
+      el.style.display = 'none';
+    }
+
+    return data;
   }
 
   // Проходим конструкцией switch по имеющимся данным по типу домов. Выводим согласно совпадающей строке.
@@ -233,5 +253,4 @@
   }
 
   createCard(createMocksForData(OFFERS_NUMBER)[0]);
-  console.log(createMocksForData(OFFERS_NUMBER)[0]);
 })();
