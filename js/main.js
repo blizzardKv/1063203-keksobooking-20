@@ -40,7 +40,9 @@
   }
 
   function shuffleArray(arr) {
-    return arr.sort(() => Math.random() - 0.5);
+    return arr.sort(function () {
+      return Math.random() - 0.5;
+    });
   }
 
   // Создаем функцию создания шаблона массива с моками данных.
