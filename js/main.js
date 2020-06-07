@@ -165,7 +165,7 @@
     var fragment = document.createDocumentFragment();
     elem.textContent = '';
 
-    features.forEach((feature) => {
+    features.forEach(function (feature) {
       var elemContainer = document.createElement('li');
       var featureClass = 'popup__feature--' + feature;
       elemContainer.classList.add('popup__feature', featureClass);
