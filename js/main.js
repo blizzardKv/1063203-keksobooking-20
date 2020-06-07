@@ -186,7 +186,7 @@
   }
 
   // Проходим конструкцией switch по имеющимся данным по типу домов. Выводим согласно совпадающей строке.
-  function translateNamesOfHouses (house) {
+  function translateNamesOfHouses(house) {
     var translate = '';
     switch (house.offer.type) {
       case 'flat':
@@ -223,7 +223,7 @@
         break;
       default:
         switchedNoun = 'комнат';
-        break
+        break;
     }
 
     return switchedNoun;
