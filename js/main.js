@@ -54,7 +54,7 @@
 
       // Получаем рандомную координату по Y. Для этого берем минимальное значение (чтобы в любом случае было 130)
       // И добавляем интервал в 500 для вычисления координаты по У. Т.е. maxY может быть только 630.
-      var locationY = Math.floor(MIN_COORDINATE_Y + (Math.random() * (MAX_COORDINATE_Y - MIN_COORDINATE_Y) + 1));
+      var locationY = Math.floor(MIN_COORDINATE_Y + (getRandomNumber(MAX_COORDINATE_Y - MIN_COORDINATE_Y)));
       var dataForPins = {
         'author': {
           'avatar': 'img/avatars/user0' + (i + 1) + '.png'
@@ -119,7 +119,7 @@
     var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
     var newCard = cardTemplate.cloneNode(true);
 
-    // Сделаем массив с шаблонами для конкатенации строк.
+    // Сделаем объект с шаблонами для конкатенации строк.
     var wordsTemplate = {
       nightCost: ' ₽/ночь.',
       pretext: ' для ',
@@ -141,7 +141,7 @@
     var offerPhoto = newCard.querySelector('.popup__photos img');
     var offerAvatar = newCard.querySelector('.popup__avatar');
 
-    // Проверяем элемент на наличие даты, если она есть, рендерим)
+    // Проверяем элемент на наличие данных, если она есть, рендерим)
     offerTitle.textContent = checkIsDataExists(cardInfo.offer.title, offerTitle);
     offerAddress.textContent = checkIsDataExists(cardInfo.offer.address, offerAddress);
     offerPrice.textContent = checkIsDataExists(cardInfo.offer.price + wordsTemplate.nightCost, offerPrice);
@@ -238,9 +238,10 @@
   function createCard(cardInfo) {
     var fragment = document.createDocumentFragment();
     var cardContainer = document.querySelector('.map__filters-container');
+    var parentNode = document.querySelector('.map');
 
     fragment.appendChild(fillCardWithInformation(cardInfo));
-    cardContainer.appendChild(fragment);
+    parentNode.insertBefore(fragment, cardContainer);
   }
 
   createCard(createMocksForData(OFFERS_NUMBER)[0]);
