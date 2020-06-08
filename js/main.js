@@ -36,9 +36,10 @@
   // Шаффлим дефолтный массив, чтобы значения перемешивались в каждой итерации
   // Возвращаем новый массив, начиная с первого элемента и до элемента с индексом emptyArray
   function getRandomNumberOfElementsFromArray(arr) {
-    var emptyArrayWithRandomLenght = Array.of(getRandomNumber(arr.length));
-    return shuffleArray(arr).slice(0, emptyArrayWithRandomLenght);
+    var emptyArrayWithRandomLength = Array.of(getRandomNumber(arr.length));
+    return shuffleArray(arr).slice(0, emptyArrayWithRandomLength);
   }
+
   function shuffleArray(arr) {
     return arr.sort(function () {
       return Math.random() - 0.5;
