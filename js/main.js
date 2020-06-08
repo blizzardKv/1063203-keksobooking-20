@@ -237,11 +237,9 @@
   // Создаем карточку для первого объявления. Создаем пустой фрагмент, заполняем информацией из функции выше, вставляем его.
   function createCard(cardInfo) {
     var fragment = document.createDocumentFragment();
-    var cardContainer = document.querySelector('.map__filters-container');
-    var parentNode = document.querySelector('.map');
 
     fragment.appendChild(fillCardWithInformation(cardInfo));
-    parentNode.insertBefore(fragment, cardContainer);
+    mapPinsArea.after(fragment);
   }
 
   createCard(createMocksForData(OFFERS_NUMBER)[0]);
