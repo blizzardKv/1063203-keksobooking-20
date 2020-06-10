@@ -25,6 +25,10 @@
   var formTextarea = form.querySelector('textarea');
   var mapFilters = document.querySelector('.map__filters');
   var mainPin = document.querySelector('.map__pin--main');
+  var roomNumberValue = form.querySelector('#room_number');
+  var guestsNumber = form.querySelector('#capacity');
+  var validationMark = '';
+  var submitButton = form.querySelector('.ad-form__submit');
 
   // Добавляем/убираем атрибут disabled у контролов
   function controlsSetAttribute(controls) {
@@ -73,6 +77,7 @@
     var pinCoordinates = mainPin.getBoundingClientRect();
     var pinEdge = window.getComputedStyle(mainPin, ':after');
     var pinEdgeHeight = parseInt(pinEdge.height, 10);
+    console.log(pinCoordinates.width);
     return 'x: ' + Math.floor(pinCoordinates.x + pinCoordinates.width / 2) + '; y: ' + Math.floor(pinCoordinates.y + pinCoordinates.height + pinEdgeHeight);
   }
 
@@ -91,6 +96,54 @@
     mainPin.removeEventListener('keydown', checkIsEnterWasPressed);
     addressInput.value = setPinCoordinates();
   }
+
+  // Создаем функцию валидации соответствия количеству комнат количества гостей
+  function compareNumberOfRoomsWithNumberOfGuests() {
+    if (roomNumberValue.value === '1' && guestsNumber.value === '1') {
+      validationMark = true;
+      roomNumberValue.setCustomValidity('');
+    } else {
+      roomNumberValue.setCustomValidity('Извините, данные апартаменты предназначены для одного гостя, выберите другой вариант');
+    }
+    if (roomNumberValue.value === '2') {
+      if (guestsNumber.value === '1' || guestsNumber.value === '2') {
+        validationMark = true;
+        roomNumberValue.setCustomValidity('');
+      } else {
+        roomNumberValue.setCustomValidity('Извините, данные апартаменты предназначены для одного или двух гостей, выберите другой вариант');
+      }
+    }
+    if (roomNumberValue.value === '3') {
+      if (guestsNumber.value === '1' || guestsNumber.value === '2' || guestsNumber.value === '3') {
+        validationMark = true;
+        roomNumberValue.setCustomValidity('');
+      } else {
+        validationMark = false;
+        roomNumberValue.setCustomValidity('Извините, данные апартаменты предназначены только для гостей, выберите другой вариант');
+      }
+    }
+    if (roomNumberValue.value === '100') {
+      if (guestsNumber.value === '0') {
+        validationMark = true;
+        roomNumberValue.setCustomValidity('');
+      } else {
+        roomNumberValue.setCustomValidity('Извините, данные апартаменты не предназначены для гостей, выберите другой вариант');
+      }
+    }
+  }
+
+  // Добавляем слушателя на сабмит, если валидация успешна.
+  form.addEventListener('submit', function (evt) {
+    evt.preventDefault();
+    if (validationMark === true) {
+      form.submit();
+    }
+  });
+
+  submitButton.addEventListener('click', compareNumberOfRoomsWithNumberOfGuests);
+
+  // Добавляем слушателя на форму для проверки соответствия в валидации
+  form.addEventListener('change', compareNumberOfRoomsWithNumberOfGuests);
 
   // Выводим рандомное число
   // Добавляем +1 т.к. Math.floor округляет вниз, а Math.random(max) = 0,9 в периоде.
