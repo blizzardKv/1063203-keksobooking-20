@@ -77,7 +77,6 @@
     var pinCoordinates = mainPin.getBoundingClientRect();
     var pinEdge = window.getComputedStyle(mainPin, ':after');
     var pinEdgeHeight = parseInt(pinEdge.height, 10);
-    console.log(pinCoordinates.width);
     return 'x: ' + Math.floor(pinCoordinates.x + pinCoordinates.width / 2) + '; y: ' + Math.floor(pinCoordinates.y + pinCoordinates.height + pinEdgeHeight);
   }
 
