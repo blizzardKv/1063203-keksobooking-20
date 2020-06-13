@@ -13,6 +13,9 @@
   var MIN_COORDINATE_Y = 130;
   var MAX_COORDINATE_Y = 630;
   var PRICE = 10000;
+  var MAX_RENT_PRICE = 1000000;
+  var MIN_TEXT_LENGTH = 30;
+  var MAX_TEXT_LENGTH = 100;
 
   // Вводим переменные
   var map = document.querySelector('.map');
@@ -27,13 +30,19 @@
   var mainPin = document.querySelector('.map__pin--main');
   var roomNumberValue = form.querySelector('#room_number');
   var rentPrice = form.querySelector('#price');
-  var houseTypes = form.querySelector('#type');
   var guestsNumber = form.querySelector('#capacity');
   var validationMark = '';
   var submitButton = form.querySelector('.ad-form__submit');
+  var textInput = document.querySelector('#title');
+  var houseType = document.querySelector('#type');
+  var addressInput = document.querySelector('#address');
+  var checkInField = document.querySelector('#timein');
+  var checkOutField = document.querySelector('#timeout');
 
-  // Добавляем/убираем атрибут disabled у контролов
+  // Добавляем/убираем атрибут disabled и required у контролов
   function controlsSetAttribute(controls) {
+    textInput.setAttribute('required', 'required');
+    rentPrice.setAttribute('required', 'required');
     controls.forEach(function (control) {
       control.setAttribute('disabled', 'disabled');
     });
@@ -84,7 +93,7 @@
 
   // Коллбэк, убирает класс с карты, рендерим пины, убираем атрибуты disabled, снимаем слушателя с mainPin
   function initMapActiveState() {
-    var addressInput = document.querySelector('.ad-form__element > input#address');
+    addressInput.setAttribute('readonly', 'readonly');
     map.classList.remove('map--faded');
     form.classList.remove('ad-form--disabled');
     controlsRemoveAttribute(formInputElements);
@@ -94,6 +103,7 @@
     formSubmit.removeAttribute('disabled');
     mainPin.removeEventListener('mousedown', checkIsLeftMouseWasPressed);
     mainPin.removeEventListener('keydown', checkIsEnterWasPressed);
+    generateCard(createCardExample());
     generatePins(pinsData);
     addressInput.value = setPinCoordinates();
   }
@@ -141,10 +151,10 @@
     }
   });
 
-  submitButton.addEventListener('click', compareNumberOfRoomsWithNumberOfGuests);
+  submitButton.addEventListener('click', validatorsHandler);
 
   // Добавляем слушателя на форму для проверки соответствия в валидации
-  form.addEventListener('change', compareNumberOfRoomsWithNumberOfGuests);
+  form.addEventListener('change', validatorsHandler);
 
   // Выводим рандомное число
   // Добавляем +1 т.к. Math.floor округляет вниз, а Math.random(max) = 0,9 в периоде.
@@ -243,9 +253,14 @@
 
   // Функция по генерации информации для карточки объявления.
   // Клонируем имеющийся шаблон, выбираем в новом шаблоне элементы, добавляем информацию.
-  function fillCardWithInformation(cardInfo) {
+  function createCardExample() {
     var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
-    var newCard = cardTemplate.cloneNode(true);
+    cardTemplate.style.display = 'none';
+    return cardTemplate.cloneNode(true);
+  }
+
+  function fillCardWithInformation(cardInfo) {
+    var cardTemplate = document.querySelector('.map__card');
 
     // Сделаем объект с шаблонами для конкатенации строк.
     var wordsTemplate = {
@@ -258,16 +273,16 @@
     };
 
     // Выбираем каждый элемент в переменную
-    var offerTitle = newCard.querySelector('.popup__title');
-    var offerAddress = newCard.querySelector('.popup__text--address');
-    var offerPrice = newCard.querySelector('.popup__text--price');
-    var offerType = newCard.querySelector('.popup__type');
-    var offerGuestsInfo = newCard.querySelector('.popup__text--capacity');
-    var offerGuestsTime = newCard.querySelector('.popup__text--time');
-    var offerDescription = newCard.querySelector('.popup__description');
-    var offerFeatures = newCard.querySelector('.popup__features');
-    var offerPhoto = newCard.querySelector('.popup__photos img');
-    var offerAvatar = newCard.querySelector('.popup__avatar');
+    var offerTitle = cardTemplate.querySelector('.popup__title');
+    var offerAddress = cardTemplate.querySelector('.popup__text--address');
+    var offerPrice = cardTemplate.querySelector('.popup__text--price');
+    var offerType = cardTemplate.querySelector('.popup__type');
+    var offerGuestsInfo = cardTemplate.querySelector('.popup__text--capacity');
+    var offerGuestsTime = cardTemplate.querySelector('.popup__text--time');
+    var offerDescription = cardTemplate.querySelector('.popup__description');
+    var offerFeatures = cardTemplate.querySelector('.popup__features');
+    var offerPhoto = cardTemplate.querySelector('.popup__photos img');
+    var offerAvatar = cardTemplate.querySelector('.popup__avatar');
 
     // Проверяем элемент на наличие данных, если она есть, рендерим)
     offerTitle.textContent = checkIsDataExists(cardInfo.offer.title, offerTitle);
@@ -281,7 +296,7 @@
     offerPhoto.src = checkIsDataExists(cardInfo.offer.photos, offerPhoto);
     offerAvatar.src = checkIsDataExists(cardInfo.author.avatar, offerAvatar);
 
-    return newCard;
+    cardTemplate.style.display = 'block';
   }
 
   // Добавляем рендер каждой фичи в зависимости от получаемой даты.
@@ -365,7 +380,7 @@
   // Создаем карточку для первого объявления. Создаем пустой фрагмент, заполняем информацией из функции выше, вставляем его.
   function generateCard(cardInfo) {
     var fragment = document.createDocumentFragment();
-    fragment.appendChild(fillCardWithInformation(cardInfo));
+    fragment.appendChild(cardInfo);
 
     mapPinsArea.after(fragment);
   }
@@ -374,30 +389,40 @@
   // используем closest (т.к. eventTarget у нас - будет либо svg, либо остриё пина). Получаем у тыкаемого пина src аватарки,
   // проходим циклом по массиву с датой, выводим только нужную карточку с совпадающей аватаркой.
   // сейчас проверка по аватарке, а так по хорошему использовался бы какой-то элемент типа id
-  function invokeAppropriateCard(cardInfo) {
+  function cardInitClickHandler(cardInfo) {
     mapPinsArea.addEventListener('click', function (evt) {
-      if (evt.target.closest('.map__pin') && !evt.target.closest('.map__pin--main')) {
-        var pinAvatarSrc = evt.target.getAttribute('src');
-        for (var i = 0; i < cardInfo.length; i++) {
-          if (pinAvatarSrc === cardInfo[i].author.avatar) {
-            generateCard(cardInfo[i]);
-            modalCloseByClickHandler();
-            modalCloseByEscHandler();
-          }
-        }
+      createAppropriateCard(evt, cardInfo);
+    });
+  }
+
+  // Не работает, вероятно из-за closest.
+  function cardInitKeydownHandler(cardInfo) {
+    document.addEventListener('keydown', function (evt) {
+      if (evt.key === 'Enter') {
+        createAppropriateCard(evt, cardInfo);
       }
     });
   }
 
-  invokeAppropriateCard(pinsData);
+  function createAppropriateCard(evt, cardInfo) {
+    if (evt.target.closest('.map__pin') && !evt.target.closest('.map__pin--main')) {
+      var pinAvatarSrc = evt.target.getAttribute('src');
+      for (var i = 0; i < cardInfo.length; i++) {
+        if (pinAvatarSrc === cardInfo[i].author.avatar) {
+          fillCardWithInformation(cardInfo[i]);
+          modalCloseByClickHandler();
+          modalCloseByEscHandler();
+        }
+      }
+    }
+  }
+
+  cardInitClickHandler(pinsData);
+  cardInitKeydownHandler(pinsData);
 
   // Функция скрытия карточки. Выбираем карточку саму, и баттон на закрытие.
-  // К обсуждению - генерация карточек/клик по острию пина
-  // Генерация карточек - я их скрываю, вместо того чтобы ререндерить в одной карточке новые данные - наверно лучше?!
+  // К обсуждению - клик по острию пина
   // Клик по острию пина - не срабатывает, т.к. псевдоэлемент. Можно наверно использовать фичу с pointer-events.
-  // Отрабатывает с querySelector - с первой интерацией вызова карточки - все понятно, есть один элемент, скрипт находит данный элемент и применяет стили
-  // Тут получается киллер-фича, т.к. карточки товаров вставляются друг за дружкой, то есть на второй итерации вызова карточки - у нас уже 2 карточки и т.д.
-  // querySelector находит первый попавшийся ему на глаза селектор и делает действия только с ним.
   function modalCloseByClickHandler() {
     var closeButton = document.querySelector('.popup__close');
     var mapCard = document.querySelector('.map__card');
@@ -428,42 +453,86 @@
       textField.setCustomValidity('');
     } else {
       textField.setCustomValidity('Минимальная длина поля - 30 символов, максимальная - 100 символов');
+      validationMark = true;
     }
   }
 
-  console.log(houseTypes.value);
+  function checkMaxRentPrice(maxPrice) {
+    if (rentPrice.value > maxPrice) {
+      validationMark = false;
+      rentPrice.setCustomValidity('Максимальная стоимость аренды - 1000000');
+    } else {
+      validationMark = true;
+    }
+  }
 
   function compareTypeOfHouseWithMinPrice() {
-    if (rentPrice.textContent < '0') {
+    if (rentPrice.value < 0) {
       validationMark = false;
       rentPrice.setCustomValidity('Вам нравится работать себе в убыток?!');
     } else {
       validationMark = true;
       rentPrice.setCustomValidity('');
     }
-    // if (houseTypes.value === 'flat' && rentPrice.textContent >= '1000') {
-    //   validationMark = true;
-    //   rentPrice.setCustomValidity('');
-    // } else {
-    //   validationMark = false;
-    //   rentPrice.setCustomValidity('Извините, минимальная стоимость за ночь для комнаты - от 1000 Р');
-    // }
-    // if (houseTypes.value === 'house' && rentPrice.textContent >= '5000') {
-    //   validationMark = true;
-    //   rentPrice.setCustomValidity('');
-    // } else {
-    //   validationMark = false;
-    //   rentPrice.setCustomValidity('Извините, минимальная стоимость за ночь для дома - от 5000 Р');
-    // }
-    // if (houseTypes.value === 'palace' && rentPrice.textContent >= '10000') {
-    //   validationMark = true;
-    //   rentPrice.setCustomValidity('');
-    // } else {
-    //   validationMark = false;
-    //   rentPrice.setCustomValidity('Извините, минимальная стоимость за ночь для дворца - от 10000 Р');
-    // }
+    if (houseType.value === 'flat') {
+      if (rentPrice.value >= 1000) {
+        validationMark = true;
+        rentPrice.setCustomValidity('');
+      }
+    } else {
+      validationMark = false;
+      rentPrice.setCustomValidity('Извините, минимальная стоимость за ночь для комнаты - от 1000 Р');
+    }
+    if (houseType.value === 'house') {
+      if (rentPrice.value >= 5000) {
+        validationMark = true;
+        rentPrice.setCustomValidity('');
+      }
+    } else {
+      validationMark = false;
+      rentPrice.setCustomValidity('Извините, минимальная стоимость за ночь для дома - от 5000 Р');
+    }
+    if (houseType.value === 'palace') {
+      if (rentPrice.value >= 10000) {
+        validationMark = true;
+        rentPrice.setCustomValidity('');
+      }
+    } else {
+      validationMark = false;
+      rentPrice.setCustomValidity('Извините, минимальная стоимость за ночь для дворца - от 10000 Р');
+    }
   }
 
-  form.addEventListener('change', compareTypeOfHouseWithMinPrice);
+  function setCheckInTimes() {
+    checkInField.addEventListener('change', function () {
+      if (checkInField.value === CHECK_OUTS[0]) {
+        checkOutField.value = CHECK_INS[0];
+      } else if (checkInField.value === CHECK_OUTS[1]) {
+        checkOutField.value = CHECK_INS[1];
+      } else if (checkInField.value === CHECK_OUTS[2]) {
+        checkOutField.value = CHECK_INS[2];
+      }
+    });
+  }
 
+  function setCheckOutTimes() {
+    checkOutField.addEventListener('change', function () {
+      if (checkOutField.value === CHECK_INS[0]) {
+        checkInField.value = CHECK_OUTS[0];
+      } else if (checkOutField.value === CHECK_INS[1]) {
+        checkInField.value = CHECK_OUTS[1];
+      } else if (checkOutField.value === CHECK_INS[2]) {
+        checkInField.value = CHECK_OUTS[2];
+      }
+    });
+  }
+
+  function validatorsHandler() {
+    compareNumberOfRoomsWithNumberOfGuests();
+    compareTypeOfHouseWithMinPrice();
+    checkMaxRentPrice(MAX_RENT_PRICE);
+    checkFieldTextLength(textInput, MIN_TEXT_LENGTH, MAX_TEXT_LENGTH);
+    setCheckInTimes();
+    setCheckOutTimes();
+  }
 })();
