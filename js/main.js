@@ -447,7 +447,7 @@
   }
 
   // Валидации из второй части задания.
-
+  // Проверка длины поля
   function checkFieldTextLength(textField, minLength, maxLength) {
     if (textField.value.length > minLength && textField.value.length < maxLength) {
       textField.setCustomValidity('');
@@ -457,6 +457,7 @@
     }
   }
 
+  // Проверка максимальной стоимости аренды
   function checkMaxRentPrice(maxPrice) {
     if (rentPrice.value > maxPrice) {
       validationMark = false;
@@ -466,50 +467,35 @@
     }
   }
 
-  function compareTypeOfHouseWithMinPrice() {
-    if (rentPrice.value < 0) {
-      validationMark = false;
-      rentPrice.setCustomValidity('Вам нравится работать себе в убыток?!');
-    } else {
-      validationMark = true;
-      rentPrice.setCustomValidity('');
+  // Слушатель на изменение типа жилья и выставление соответствующей минимальной цены аренды
+  houseType.addEventListener('change', function () {
+    if (houseType.value === 'bungalo') {
+      rentPrice.min = 0;
+      rentPrice.placeholder = 0;
+    } else if (houseType.value === 'flat') {
+      rentPrice.min = 1000;
+      rentPrice.placeholder = 1000;
+    } else if (houseType.value === 'house') {
+      rentPrice.min = 5000;
+      rentPrice.placeholder = 5000;
+    } else if (houseType.value === 'palace') {
+      rentPrice.min = 10000;
+      rentPrice.placeholder = 10000;
     }
-    if (houseType.value === 'flat') {
-      if (rentPrice.value >= 1000) {
-        validationMark = true;
-        rentPrice.setCustomValidity('');
-      }
-    } else {
-      validationMark = false;
-      rentPrice.setCustomValidity('Извините, минимальная стоимость за ночь для комнаты - от 1000 Р');
-    }
-    if (houseType.value === 'house') {
-      if (rentPrice.value >= 5000) {
-        validationMark = true;
-        rentPrice.setCustomValidity('');
-      }
-    } else {
-      validationMark = false;
-      rentPrice.setCustomValidity('Извините, минимальная стоимость за ночь для дома - от 5000 Р');
-    }
-    if (houseType.value === 'palace') {
-      if (rentPrice.value >= 10000) {
-        validationMark = true;
-        rentPrice.setCustomValidity('');
-      }
-    } else {
-      validationMark = false;
-      rentPrice.setCustomValidity('Извините, минимальная стоимость за ночь для дворца - от 10000 Р');
-    }
-  }
+  });
 
+  // Слушатели на синхронизацию изменений времени выезда/заезда
   checkInField.addEventListener('change', function () {
     checkOutField.value = checkInField.value;
   });
 
+  checkOutField.addEventListener('change', function () {
+    checkInField.value = checkOutField.value;
+  });
+
+  // Вызов валидаторов с флагом
   function validatorsHandler() {
     compareNumberOfRoomsWithNumberOfGuests();
-    compareTypeOfHouseWithMinPrice();
     checkMaxRentPrice(MAX_RENT_PRICE);
     checkFieldTextLength(textInput, MIN_TEXT_LENGTH, MAX_TEXT_LENGTH);
   }
