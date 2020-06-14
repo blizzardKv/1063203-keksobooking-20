@@ -63,6 +63,8 @@
     mapFilters.setAttribute('disabled', 'disabled');
     formTextarea.setAttribute('disabled', 'disabled');
     formSubmit.setAttribute('disabled', 'disabled');
+    // Чтобы не мозолило глаза, а то дефолтный плейсхолдер не соответствует дефолтному значению
+    rentPrice.setAttribute('placeholder', '1000');
   }
 
   // Добавляем слушателя для инициализации карты, проверяем клик левой кнопкой
