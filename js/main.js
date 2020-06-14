@@ -2,7 +2,7 @@
 (function () {
   var OFFERS_NUMBER = 8;
   var OFFER_TITLES = ['Шикарная квартира', 'Уютная комната', 'Огромный дворец', 'Просторное бунгало'];
-  var HOUSE_TYPES = ['palace', 'flat', 'house', 'bungalo'];
+  var HOUSE_TYPES = ['bungalo', 'flat', 'house', 'palace'];
   var MAX_ROOMS = 10;
   var MAX_GUESTS = 15;
   var CHECK_INS = ['12:00', '13:00', '14:00'];
@@ -503,36 +503,14 @@
     }
   }
 
-  function setCheckInTimes() {
-    checkInField.addEventListener('change', function () {
-      if (checkInField.value === CHECK_OUTS[0]) {
-        checkOutField.value = CHECK_INS[0];
-      } else if (checkInField.value === CHECK_OUTS[1]) {
-        checkOutField.value = CHECK_INS[1];
-      } else if (checkInField.value === CHECK_OUTS[2]) {
-        checkOutField.value = CHECK_INS[2];
-      }
-    });
-  }
-
-  function setCheckOutTimes() {
-    checkOutField.addEventListener('change', function () {
-      if (checkOutField.value === CHECK_INS[0]) {
-        checkInField.value = CHECK_OUTS[0];
-      } else if (checkOutField.value === CHECK_INS[1]) {
-        checkInField.value = CHECK_OUTS[1];
-      } else if (checkOutField.value === CHECK_INS[2]) {
-        checkInField.value = CHECK_OUTS[2];
-      }
-    });
-  }
+  checkInField.addEventListener('change', function () {
+    checkOutField.value = checkInField.value;
+  });
 
   function validatorsHandler() {
     compareNumberOfRoomsWithNumberOfGuests();
     compareTypeOfHouseWithMinPrice();
     checkMaxRentPrice(MAX_RENT_PRICE);
     checkFieldTextLength(textInput, MIN_TEXT_LENGTH, MAX_TEXT_LENGTH);
-    setCheckInTimes();
-    setCheckOutTimes();
   }
 })();
