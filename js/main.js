@@ -107,4 +107,6 @@
     window.validators.checkMaxRentPrice(MAX_RENT_PRICE);
     window.validators.checkFieldTextLength(window.domComponents.textInput, MIN_TEXT_LENGTH, MAX_TEXT_LENGTH);
   }
+
+  window.pin.moveMainPin();
 })();
