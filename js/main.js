@@ -14,11 +14,153 @@
   var MAX_COORDINATE_Y = 630;
   var PRICE = 10000;
 
-  // Скрываем лэйаут карты
+  // Вводим переменные
   var map = document.querySelector('.map');
-  map.classList.remove('map--faded');
-  var mapPinsArea = document.querySelector('.map__pins');
+  var mapPinsArea = map.querySelector('.map__pins');
   var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
+  var form = document.querySelector('.ad-form');
+  var formInputElements = form.querySelectorAll('input');
+  var formSelectElements = form.querySelectorAll('select');
+  var formSubmit = form.querySelector('button[type="submit"]');
+  var formTextarea = form.querySelector('textarea');
+  var mapFilters = map.querySelector('.map__filters');
+  var mainPin = map.querySelector('.map__pin--main');
+  var roomNumberValue = form.querySelector('#room_number');
+  var guestsNumber = form.querySelector('#capacity');
+  var validationMark = '';
+  var submitButton = form.querySelector('.ad-form__submit');
+  var mapFiltersSelects = mapFilters.querySelectorAll('select');
+  var mapFiltersInputs = mapFilters.querySelectorAll('input');
+
+  // Добавляем/убираем атрибут disabled у контролов
+  function controlsSetAttribute(controls) {
+    controls.forEach(function (control) {
+      control.setAttribute('disabled', 'disabled');
+    });
+  }
+
+  function controlsRemoveAttribute(controls) {
+    controls.forEach(function (control) {
+      control.removeAttribute('disabled');
+    });
+  }
+
+  setMapDefaultState();
+
+  function setCustomAttributeOnCollection(elements, attribute, property) {
+    elements.forEach(function (elem) {
+      elem.setAttribute(attribute, property);
+    });
+  }
+
+  // Задаем дефолтное состояние для карты и сразу же вызываем функцию
+  function setMapDefaultState() {
+    controlsSetAttribute(formInputElements);
+    controlsSetAttribute(formSelectElements);
+    mapFilters.setAttribute('disabled', 'disabled');
+    formTextarea.setAttribute('disabled', 'disabled');
+    formSubmit.setAttribute('disabled', 'disabled');
+    setCustomAttributeOnCollection(mapFiltersSelects, 'disabled', 'disabled');
+    setCustomAttributeOnCollection(mapFiltersInputs, 'disabled', 'disabled');
+  }
+
+  // Добавляем слушателя для инициализации карты, проверяем клик левой кнопкой
+
+  mainPin.addEventListener('mousedown', mainPinMousedownHandler);
+  mainPin.addEventListener('keydown', mainPinKeydownHandler);
+
+  function mainPinMousedownHandler(evt) {
+    if (evt.button === 0) {
+      initMapActiveState();
+    }
+  }
+
+  function mainPinKeydownHandler(e) {
+    if (e.key === 'Enter') {
+      initMapActiveState();
+    }
+  }
+
+  // Задаем координаты для поля адреса. Берем с помощью getBoundingRect значения по x,y, height и width пина.
+  // Добавляем значения острия, высотпу получаем из getComputedStyle
+  function setPinCoordinates() {
+    var pinCoordinates = mainPin.getBoundingClientRect();
+    var pinEdge = window.getComputedStyle(mainPin, ':after');
+    var pinEdgeHeight = parseInt(pinEdge.height, 10);
+    return 'x: ' + Math.floor(pinCoordinates.x + pinCoordinates.width / 2) + '; y: ' + Math.floor(pinCoordinates.y + pinCoordinates.height + pinEdgeHeight);
+  }
+
+  // Коллбэк, убирает класс с карты, рендерим пины, убираем атрибуты disabled, снимаем слушателя с mainPin
+  function initMapActiveState() {
+    var addressInput = document.querySelector('#address');
+    map.classList.remove('map--faded');
+    form.classList.remove('ad-form--disabled');
+    controlsRemoveAttribute(formInputElements);
+    controlsRemoveAttribute(formSelectElements);
+    mapFilters.removeAttribute('disabled');
+    formTextarea.removeAttribute('disabled');
+    formSubmit.removeAttribute('disabled');
+    generatePins(createMocksForData(OFFERS_NUMBER));
+    mainPin.removeEventListener('mousedown', mainPinMousedownHandler);
+    mainPin.removeEventListener('keydown', mainPinKeydownHandler);
+    addressInput.value = setPinCoordinates();
+  }
+
+  // Создаем функцию валидации соответствия количеству комнат количества гостей
+  function compareNumberOfRoomsWithNumberOfGuests() {
+    if (roomNumberValue.value === '1' && guestsNumber.value === '1') {
+      validationMark = true;
+      roomNumberValue.setCustomValidity('');
+    } else {
+      roomNumberValue.setCustomValidity('Извините, данные апартаменты предназначены для одного гостя, выберите другой вариант');
+    }
+    if (roomNumberValue.value === '2') {
+      if (guestsNumber.value === '1' || guestsNumber.value === '2') {
+        validationMark = true;
+        roomNumberValue.setCustomValidity('');
+      } else {
+        roomNumberValue.setCustomValidity('Извините, данные апартаменты предназначены для одного или двух гостей, выберите другой вариант');
+      }
+    }
+    if (roomNumberValue.value === '3') {
+      if (guestsNumber.value === '1' || guestsNumber.value === '2' || guestsNumber.value === '3') {
+        validationMark = true;
+        roomNumberValue.setCustomValidity('');
+      } else {
+        validationMark = false;
+        roomNumberValue.setCustomValidity('Извините, данные апартаменты предназначены только для гостей, выберите другой вариант');
+      }
+    }
+    if (roomNumberValue.value === '100') {
+      if (guestsNumber.value === '0') {
+        validationMark = true;
+        roomNumberValue.setCustomValidity('');
+      } else {
+        roomNumberValue.setCustomValidity('Извините, данные апартаменты не предназначены для гостей, выберите другой вариант');
+      }
+    }
+  }
+
+  // Добавляем слушателя на сабмит, если валидация успешна.
+  form.addEventListener('submit', function (evt) {
+    evt.preventDefault();
+    if (validationMark === true) {
+      form.submit();
+    }
+  });
+
+  submitButton.addEventListener('click', submitButtonClickHandler);
+
+  function submitButtonClickHandler() {
+    compareNumberOfRoomsWithNumberOfGuests();
+  }
+
+  // Добавляем слушателя на форму для проверки соответствия в валидации
+  form.addEventListener('change', formChangeHandler);
+
+  function formChangeHandler() {
+    compareNumberOfRoomsWithNumberOfGuests();
+  }
 
   // Выводим рандомное число
   // Добавляем +1 т.к. Math.floor округляет вниз, а Math.random(max) = 0,9 в периоде.
@@ -112,136 +254,135 @@
   }
 
   // Запускаем цепочку функций по генерации пинов.
-  generatePins(createMocksForData(OFFERS_NUMBER));
 
   // Функция по генерации информации для карточки объявления.
   // Клонируем имеющийся шаблон, выбираем в новом шаблоне элементы, добавляем информацию.
-  function fillCardWithInformation(cardInfo) {
-    var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
-    var newCard = cardTemplate.cloneNode(true);
-
-    // Сделаем объект с шаблонами для конкатенации строк.
-    var wordsTemplate = {
-      nightCost: ' ₽/ночь.',
-      pretext: ' для ',
-      space: ' ',
-      checkIn: 'Заезд после ',
-      checkOut: 'выезд до ',
-      comma: ', '
-    };
-
-    // Выбираем каждый элемент в переменную
-    var offerTitle = newCard.querySelector('.popup__title');
-    var offerAddress = newCard.querySelector('.popup__text--address');
-    var offerPrice = newCard.querySelector('.popup__text--price');
-    var offerType = newCard.querySelector('.popup__type');
-    var offerGuestsInfo = newCard.querySelector('.popup__text--capacity');
-    var offerGuestsTime = newCard.querySelector('.popup__text--time');
-    var offerDescription = newCard.querySelector('.popup__description');
-    var offerFeatures = newCard.querySelector('.popup__features');
-    var offerPhoto = newCard.querySelector('.popup__photos img');
-    var offerAvatar = newCard.querySelector('.popup__avatar');
-
-    // Проверяем элемент на наличие данных, если она есть, рендерим)
-    offerTitle.textContent = checkIsDataExists(cardInfo.offer.title, offerTitle);
-    offerAddress.textContent = checkIsDataExists(cardInfo.offer.address, offerAddress);
-    offerPrice.textContent = checkIsDataExists(cardInfo.offer.price + wordsTemplate.nightCost, offerPrice);
-    offerType.textContent = checkIsDataExists(translateNamesOfHouses(cardInfo), offerType);
-    offerGuestsInfo.textContent = checkIsDataExists(cardInfo.offer.rooms + wordsTemplate.space + getRoomsCases(cardInfo) + wordsTemplate.pretext + cardInfo.offer.guests + wordsTemplate.space + getGuestsCases(cardInfo), offerGuestsInfo);
-    offerGuestsTime.textContent = checkIsDataExists(wordsTemplate.checkIn + cardInfo.offer.checkin + wordsTemplate.comma + wordsTemplate.checkOut + cardInfo.offer.checkout, offerGuestsTime);
-    offerDescription.textContent = checkIsDataExists(cardInfo.offer.description, offerDescription);
-    checkIsDataExists(createFeatureWithIcon(offerFeatures, cardInfo.offer.features), offerFeatures);
-    offerPhoto.src = checkIsDataExists(cardInfo.offer.photos, offerPhoto);
-    offerAvatar.src = checkIsDataExists(cardInfo.author.avatar, offerAvatar);
-
-    return newCard;
-  }
+  // function fillCardWithInformation(cardInfo) {
+  //   var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
+  //   var newCard = cardTemplate.cloneNode(true);
+  //
+  //   // Сделаем объект с шаблонами для конкатенации строк.
+  //   var wordsTemplate = {
+  //     nightCost: ' ₽/ночь.',
+  //     pretext: ' для ',
+  //     space: ' ',
+  //     checkIn: 'Заезд после ',
+  //     checkOut: 'выезд до ',
+  //     comma: ', '
+  //   };
+  //
+  //   // Выбираем каждый элемент в переменную
+  //   var offerTitle = newCard.querySelector('.popup__title');
+  //   var offerAddress = newCard.querySelector('.popup__text--address');
+  //   var offerPrice = newCard.querySelector('.popup__text--price');
+  //   var offerType = newCard.querySelector('.popup__type');
+  //   var offerGuestsInfo = newCard.querySelector('.popup__text--capacity');
+  //   var offerGuestsTime = newCard.querySelector('.popup__text--time');
+  //   var offerDescription = newCard.querySelector('.popup__description');
+  //   var offerFeatures = newCard.querySelector('.popup__features');
+  //   var offerPhoto = newCard.querySelector('.popup__photos img');
+  //   var offerAvatar = newCard.querySelector('.popup__avatar');
+  //
+  //   // Проверяем элемент на наличие данных, если она есть, рендерим)
+  //   offerTitle.textContent = checkIsDataExists(cardInfo.offer.title, offerTitle);
+  //   offerAddress.textContent = checkIsDataExists(cardInfo.offer.address, offerAddress);
+  //   offerPrice.textContent = checkIsDataExists(cardInfo.offer.price + wordsTemplate.nightCost, offerPrice);
+  //   offerType.textContent = checkIsDataExists(translateNamesOfHouses(cardInfo), offerType);
+  //   offerGuestsInfo.textContent = checkIsDataExists(cardInfo.offer.rooms + wordsTemplate.space + getRoomsCases(cardInfo) + wordsTemplate.pretext + cardInfo.offer.guests + wordsTemplate.space + getGuestsCases(cardInfo), offerGuestsInfo);
+  //   offerGuestsTime.textContent = checkIsDataExists(wordsTemplate.checkIn + cardInfo.offer.checkin + wordsTemplate.comma + wordsTemplate.checkOut + cardInfo.offer.checkout, offerGuestsTime);
+  //   offerDescription.textContent = checkIsDataExists(cardInfo.offer.description, offerDescription);
+  //   checkIsDataExists(createFeatureWithIcon(offerFeatures, cardInfo.offer.features), offerFeatures);
+  //   offerPhoto.src = checkIsDataExists(cardInfo.offer.photos, offerPhoto);
+  //   offerAvatar.src = checkIsDataExists(cardInfo.author.avatar, offerAvatar);
+  //
+  //   return newCard;
+  // }
 
   // Добавляем рендер каждой фичи в зависимости от получаемой даты.
   // Создаем пустой фрагмент, проходим по коллекции фич методом forEach.
   // "Стираем" данные в elem - с помощью textContent, иначе сохраняются дефолтные картинки фич.
   // За каждый имеющийся элемент коллекции - создаем li с заданными классами в соответствии с шаблоном
   // Вставляем полученную лишку в пустой докФрагмент. Далее добавляем получившийся докФрагмент в элемент шаблона.
-  function createFeatureWithIcon(elem, features) {
-    var fragment = document.createDocumentFragment();
-    elem.textContent = '';
-
-    features.forEach(function (feature) {
-      var elemContainer = document.createElement('li');
-      var featureClass = 'popup__feature--' + feature;
-      elemContainer.classList.add('popup__feature', featureClass);
-      fragment.appendChild(elemContainer);
-    });
-
-    return elem.appendChild(fragment);
-  }
-
-  // Проверяем наличие даты для рендера.
-  // Если её нет или она undefined, то скрываем элемент, куда должна была отправиться дата.
-  function checkIsDataExists(data, el) {
-    if (data.length === 0 || data.length === 'undefined') {
-      el.style.display = 'none';
-    }
-
-    return data;
-  }
-
-  // Проходим конструкцией switch по имеющимся данным по типу домов. Выводим согласно совпадающей строке.
-  function translateNamesOfHouses(house) {
-    var translate = '';
-    switch (house.offer.type) {
-      case 'flat':
-        translate = 'Комната';
-        break;
-
-      case 'bungalo':
-        translate = 'Бунгало';
-        break;
-
-      case 'house':
-        translate = 'Дом';
-        break;
-
-      case 'palace':
-        translate = 'Дворец';
-        break;
-    }
-
-    return translate;
-  }
-
-  // Проходим конструкцией switch по имеющимся данным по количеству комнат. Изменяем падежи существительных.
-  function getRoomsCases(noun) {
-    var switchedNoun = '';
-    switch (noun.offer.rooms) {
-      case 1:
-        switchedNoun = 'комната';
-        break;
-      case 2:
-      case 3:
-      case 4:
-        switchedNoun = 'комнаты';
-        break;
-      default:
-        switchedNoun = 'комнат';
-        break;
-    }
-
-    return switchedNoun;
-  }
-
-  // Проверяем падеж у слова "гость"
-  function getGuestsCases(noun) {
-    return noun.offer.guests === 1 ? 'гостя' : 'гостей';
-  }
+  // function createFeatureWithIcon(elem, features) {
+  //   var fragment = document.createDocumentFragment();
+  //   elem.textContent = '';
+  //
+  //   features.forEach(function (feature) {
+  //     var elemContainer = document.createElement('li');
+  //     var featureClass = 'popup__feature--' + feature;
+  //     elemContainer.classList.add('popup__feature', featureClass);
+  //     fragment.appendChild(elemContainer);
+  //   });
+  //
+  //   return elem.appendChild(fragment);
+  // }
+  //
+  // // Проверяем наличие даты для рендера.
+  // // Если её нет или она undefined, то скрываем элемент, куда должна была отправиться дата.
+  // function checkIsDataExists(data, el) {
+  //   if (data.length === 0 || data.length === 'undefined') {
+  //     el.style.display = 'none';
+  //   }
+  //
+  //   return data;
+  // }
+  //
+  // // Проходим конструкцией switch по имеющимся данным по типу домов. Выводим согласно совпадающей строке.
+  // function translateNamesOfHouses(house) {
+  //   var translate = '';
+  //   switch (house.offer.type) {
+  //     case 'flat':
+  //       translate = 'Комната';
+  //       break;
+  //
+  //     case 'bungalo':
+  //       translate = 'Бунгало';
+  //       break;
+  //
+  //     case 'house':
+  //       translate = 'Дом';
+  //       break;
+  //
+  //     case 'palace':
+  //       translate = 'Дворец';
+  //       break;
+  //   }
+  //
+  //   return translate;
+  // }
+  //
+  // // Проходим конструкцией switch по имеющимся данным по количеству комнат. Изменяем падежи существительных.
+  // function getRoomsCases(noun) {
+  //   var switchedNoun = '';
+  //   switch (noun.offer.rooms) {
+  //     case 1:
+  //       switchedNoun = 'комната';
+  //       break;
+  //     case 2:
+  //     case 3:
+  //     case 4:
+  //       switchedNoun = 'комнаты';
+  //       break;
+  //     default:
+  //       switchedNoun = 'комнат';
+  //       break;
+  //   }
+  //
+  //   return switchedNoun;
+  // }
+  //
+  // // Проверяем падеж у слова "гость"
+  // function getGuestsCases(noun) {
+  //   return noun.offer.guests === 1 ? 'гостя' : 'гостей';
+  // }
 
   // Создаем карточку для первого объявления. Создаем пустой фрагмент, заполняем информацией из функции выше, вставляем его.
-  function createCard(cardInfo) {
-    var fragment = document.createDocumentFragment();
+  // function createCard(cardInfo) {
+  //   var fragment = document.createDocumentFragment();
+  //
+  //   fragment.appendChild(fillCardWithInformation(cardInfo));
+  //   mapPinsArea.after(fragment);
+  // }
 
-    fragment.appendChild(fillCardWithInformation(cardInfo));
-    mapPinsArea.after(fragment);
-  }
-
-  createCard(createMocksForData(OFFERS_NUMBER)[0]);
+  // createCard(createMocksForData(OFFERS_NUMBER)[0]);
 })();
