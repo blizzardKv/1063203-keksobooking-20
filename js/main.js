@@ -29,6 +29,8 @@
   var guestsNumber = form.querySelector('#capacity');
   var validationMark = '';
   var submitButton = form.querySelector('.ad-form__submit');
+  var mapFiltersSelects = mapFilters.querySelectorAll('select');
+  var mapFiltersInputs = mapFilters.querySelectorAll('input');
 
   // Добавляем/убираем атрибут disabled у контролов
   function controlsSetAttribute(controls) {
@@ -45,6 +47,12 @@
 
   setMapDefaultState();
 
+  function setCustomAttributeOnCollection(elements, attribute, property) {
+    elements.forEach(function (elem) {
+      elem.setAttribute(attribute, property);
+    });
+  }
+
   // Задаем дефолтное состояние для карты и сразу же вызываем функцию
   function setMapDefaultState() {
     controlsSetAttribute(formInputElements);
@@ -52,6 +60,8 @@
     mapFilters.setAttribute('disabled', 'disabled');
     formTextarea.setAttribute('disabled', 'disabled');
     formSubmit.setAttribute('disabled', 'disabled');
+    setCustomAttributeOnCollection(mapFiltersSelects, 'disabled', 'disabled');
+    setCustomAttributeOnCollection(mapFiltersInputs, 'disabled', 'disabled');
   }
 
   // Добавляем слушателя для инициализации карты, проверяем клик левой кнопкой
