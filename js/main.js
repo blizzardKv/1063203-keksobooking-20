@@ -91,8 +91,8 @@
     formTextarea.removeAttribute('disabled');
     formSubmit.removeAttribute('disabled');
     generatePins(createMocksForData(OFFERS_NUMBER));
-    mainPin.removeEventListener('mousedown', checkIsLeftMouseWasPressed);
-    mainPin.removeEventListener('keydown', checkIsEnterWasPressed);
+    mainPin.removeEventListener('mousedown', leftClickHandler);
+    mainPin.removeEventListener('keydown', enterHandler);
     addressInput.value = setPinCoordinates();
   }
 
