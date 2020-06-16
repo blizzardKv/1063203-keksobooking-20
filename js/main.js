@@ -56,16 +56,16 @@
 
   // Добавляем слушателя для инициализации карты, проверяем клик левой кнопкой
 
-  mainPin.addEventListener('mousedown', leftClickHandler);
-  mainPin.addEventListener('keydown', enterHandler);
+  mainPin.addEventListener('mousedown', mainPinMousedownHandler);
+  mainPin.addEventListener('keydown', mainPinKeydownHandler);
 
-  function leftClickHandler(evt) {
+  function mainPinMousedownHandler(evt) {
     if (evt.button === 0) {
       initMapActiveState();
     }
   }
 
-  function enterHandler(e) {
+  function mainPinKeydownHandler(e) {
     if (e.key === 'Enter') {
       initMapActiveState();
     }
@@ -82,7 +82,7 @@
 
   // Коллбэк, убирает класс с карты, рендерим пины, убираем атрибуты disabled, снимаем слушателя с mainPin
   function initMapActiveState() {
-    var addressInput = document.querySelector('.ad-form__element > input#address');
+    var addressInput = document.querySelector('#address');
     map.classList.remove('map--faded');
     form.classList.remove('ad-form--disabled');
     controlsRemoveAttribute(formInputElements);
@@ -91,8 +91,8 @@
     formTextarea.removeAttribute('disabled');
     formSubmit.removeAttribute('disabled');
     generatePins(createMocksForData(OFFERS_NUMBER));
-    mainPin.removeEventListener('mousedown', leftClickHandler);
-    mainPin.removeEventListener('keydown', enterHandler);
+    mainPin.removeEventListener('mousedown', mainPinMousedownHandler);
+    mainPin.removeEventListener('keydown', mainPinKeydownHandler);
     addressInput.value = setPinCoordinates();
   }
 
