@@ -16,15 +16,21 @@
 
   // Вводим переменные
   var map = document.querySelector('.map');
-  var mapPinsArea = document.querySelector('.map__pins');
+  var mapPinsArea = map.querySelector('.map__pins');
   var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
   var form = document.querySelector('.ad-form');
   var formInputElements = form.querySelectorAll('input');
   var formSelectElements = form.querySelectorAll('select');
   var formSubmit = form.querySelector('button[type="submit"]');
   var formTextarea = form.querySelector('textarea');
-  var mapFilters = document.querySelector('.map__filters');
-  var mainPin = document.querySelector('.map__pin--main');
+  var mapFilters = map.querySelector('.map__filters');
+  var mainPin = map.querySelector('.map__pin--main');
+  var roomNumberValue = form.querySelector('#room_number');
+  var guestsNumber = form.querySelector('#capacity');
+  var validationMark = '';
+  var submitButton = form.querySelector('.ad-form__submit');
+  var mapFiltersSelects = mapFilters.querySelectorAll('select');
+  var mapFiltersInputs = mapFilters.querySelectorAll('input');
 
   // Добавляем/убираем атрибут disabled у контролов
   function controlsSetAttribute(controls) {
@@ -41,6 +47,12 @@
 
   setMapDefaultState();
 
+  function setCustomAttributeOnCollection(elements, attribute, property) {
+    elements.forEach(function (elem) {
+      elem.setAttribute(attribute, property);
+    });
+  }
+
   // Задаем дефолтное состояние для карты и сразу же вызываем функцию
   function setMapDefaultState() {
     controlsSetAttribute(formInputElements);
@@ -48,20 +60,22 @@
     mapFilters.setAttribute('disabled', 'disabled');
     formTextarea.setAttribute('disabled', 'disabled');
     formSubmit.setAttribute('disabled', 'disabled');
+    setCustomAttributeOnCollection(mapFiltersSelects, 'disabled', 'disabled');
+    setCustomAttributeOnCollection(mapFiltersInputs, 'disabled', 'disabled');
   }
 
   // Добавляем слушателя для инициализации карты, проверяем клик левой кнопкой
 
-  mainPin.addEventListener('mousedown', checkIsLeftMouseWasPressed);
-  mainPin.addEventListener('keydown', checkIsEnterWasPressed);
+  mainPin.addEventListener('mousedown', mainPinMousedownHandler);
+  mainPin.addEventListener('keydown', mainPinKeydownHandler);
 
-  function checkIsLeftMouseWasPressed(evt) {
+  function mainPinMousedownHandler(evt) {
     if (evt.button === 0) {
       initMapActiveState();
     }
   }
 
-  function checkIsEnterWasPressed(e) {
+  function mainPinKeydownHandler(e) {
     if (e.key === 'Enter') {
       initMapActiveState();
     }
@@ -78,7 +92,7 @@
 
   // Коллбэк, убирает класс с карты, рендерим пины, убираем атрибуты disabled, снимаем слушателя с mainPin
   function initMapActiveState() {
-    var addressInput = document.querySelector('.ad-form__element > input#address');
+    var addressInput = document.querySelector('#address');
     map.classList.remove('map--faded');
     form.classList.remove('ad-form--disabled');
     controlsRemoveAttribute(formInputElements);
@@ -87,9 +101,65 @@
     formTextarea.removeAttribute('disabled');
     formSubmit.removeAttribute('disabled');
     generatePins(createMocksForData(OFFERS_NUMBER));
-    mainPin.removeEventListener('mousedown', checkIsLeftMouseWasPressed);
-    mainPin.removeEventListener('keydown', checkIsEnterWasPressed);
+    mainPin.removeEventListener('mousedown', mainPinMousedownHandler);
+    mainPin.removeEventListener('keydown', mainPinKeydownHandler);
     addressInput.value = setPinCoordinates();
+  }
+
+  // Создаем функцию валидации соответствия количеству комнат количества гостей
+  function compareNumberOfRoomsWithNumberOfGuests() {
+    if (roomNumberValue.value === '1' && guestsNumber.value === '1') {
+      validationMark = true;
+      roomNumberValue.setCustomValidity('');
+    } else {
+      roomNumberValue.setCustomValidity('Извините, данные апартаменты предназначены для одного гостя, выберите другой вариант');
+    }
+    if (roomNumberValue.value === '2') {
+      if (guestsNumber.value === '1' || guestsNumber.value === '2') {
+        validationMark = true;
+        roomNumberValue.setCustomValidity('');
+      } else {
+        roomNumberValue.setCustomValidity('Извините, данные апартаменты предназначены для одного или двух гостей, выберите другой вариант');
+      }
+    }
+    if (roomNumberValue.value === '3') {
+      if (guestsNumber.value === '1' || guestsNumber.value === '2' || guestsNumber.value === '3') {
+        validationMark = true;
+        roomNumberValue.setCustomValidity('');
+      } else {
+        validationMark = false;
+        roomNumberValue.setCustomValidity('Извините, данные апартаменты предназначены только для гостей, выберите другой вариант');
+      }
+    }
+    if (roomNumberValue.value === '100') {
+      if (guestsNumber.value === '0') {
+        validationMark = true;
+        roomNumberValue.setCustomValidity('');
+      } else {
+        roomNumberValue.setCustomValidity('Извините, данные апартаменты не предназначены для гостей, выберите другой вариант');
+      }
+    }
+  }
+
+  // Добавляем слушателя на сабмит, если валидация успешна.
+  form.addEventListener('submit', function (evt) {
+    evt.preventDefault();
+    if (validationMark === true) {
+      form.submit();
+    }
+  });
+
+  submitButton.addEventListener('click', submitButtonClickHandler);
+
+  function submitButtonClickHandler() {
+    compareNumberOfRoomsWithNumberOfGuests();
+  }
+
+  // Добавляем слушателя на форму для проверки соответствия в валидации
+  form.addEventListener('change', formChangeHandler);
+
+  function formChangeHandler() {
+    compareNumberOfRoomsWithNumberOfGuests();
   }
 
   // Выводим рандомное число
