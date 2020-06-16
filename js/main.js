@@ -139,10 +139,18 @@
     }
   });
 
-  submitButton.addEventListener('click', compareNumberOfRoomsWithNumberOfGuests);
+  submitButton.addEventListener('click', submitButtonClickHandler);
+
+  function submitButtonClickHandler() {
+    compareNumberOfRoomsWithNumberOfGuests();
+  }
 
   // Добавляем слушателя на форму для проверки соответствия в валидации
-  form.addEventListener('change', compareNumberOfRoomsWithNumberOfGuests);
+  form.addEventListener('change', formChangeHandler);
+
+  function formChangeHandler() {
+    compareNumberOfRoomsWithNumberOfGuests();
+  }
 
   // Выводим рандомное число
   // Добавляем +1 т.к. Math.floor округляет вниз, а Math.random(max) = 0,9 в периоде.
