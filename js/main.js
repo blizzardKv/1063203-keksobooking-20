@@ -16,15 +16,15 @@
 
   // Вводим переменные
   var map = document.querySelector('.map');
-  var mapPinsArea = document.querySelector('.map__pins');
+  var mapPinsArea = map.querySelector('.map__pins');
   var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
   var form = document.querySelector('.ad-form');
   var formInputElements = form.querySelectorAll('input');
   var formSelectElements = form.querySelectorAll('select');
   var formSubmit = form.querySelector('button[type="submit"]');
   var formTextarea = form.querySelector('textarea');
-  var mapFilters = document.querySelector('.map__filters');
-  var mainPin = document.querySelector('.map__pin--main');
+  var mapFilters = map.querySelector('.map__filters');
+  var mainPin = map.querySelector('.map__pin--main');
   var roomNumberValue = form.querySelector('#room_number');
   var guestsNumber = form.querySelector('#capacity');
   var validationMark = '';
@@ -56,16 +56,16 @@
 
   // Добавляем слушателя для инициализации карты, проверяем клик левой кнопкой
 
-  mainPin.addEventListener('mousedown', checkIsLeftMouseWasPressed);
-  mainPin.addEventListener('keydown', checkIsEnterWasPressed);
+  mainPin.addEventListener('mousedown', leftClickHandler);
+  mainPin.addEventListener('keydown', enterHandler);
 
-  function checkIsLeftMouseWasPressed(evt) {
+  function leftClickHandler(evt) {
     if (evt.button === 0) {
       initMapActiveState();
     }
   }
 
-  function checkIsEnterWasPressed(e) {
+  function enterHandler(e) {
     if (e.key === 'Enter') {
       initMapActiveState();
     }
