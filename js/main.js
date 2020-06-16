@@ -33,11 +33,11 @@
   var guestsNumber = form.querySelector('#capacity');
   var validationMark = '';
   var submitButton = form.querySelector('.ad-form__submit');
-  var textInput = document.querySelector('#title');
-  var houseType = document.querySelector('#type');
-  var addressInput = document.querySelector('#address');
-  var checkInField = document.querySelector('#timein');
-  var checkOutField = document.querySelector('#timeout');
+  var textInput = form.querySelector('#title');
+  var houseType = form.querySelector('#type');
+  var addressInput = form.querySelector('#address');
+  var checkInField = form.querySelector('#timein');
+  var checkOutField = form.querySelector('#timeout');
   var mapFiltersSelects = mapFilters.querySelectorAll('select');
   var mapFiltersInputs = mapFilters.querySelectorAll('input');
 
