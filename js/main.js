@@ -19,34 +19,27 @@
 
   // Вводим переменные
   var map = document.querySelector('.map');
-  var mapPinsArea = document.querySelector('.map__pins');
+  var mapPinsArea = map.querySelector('.map__pins');
   var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
   var form = document.querySelector('.ad-form');
   var formInputElements = form.querySelectorAll('input');
   var formSelectElements = form.querySelectorAll('select');
   var formSubmit = form.querySelector('button[type="submit"]');
   var formTextarea = form.querySelector('textarea');
-  var mapFilters = document.querySelector('.map__filters');
-  var mainPin = document.querySelector('.map__pin--main');
+  var mapFilters = map.querySelector('.map__filters');
+  var mainPin = map.querySelector('.map__pin--main');
   var roomNumberValue = form.querySelector('#room_number');
   var rentPrice = form.querySelector('#price');
   var guestsNumber = form.querySelector('#capacity');
   var validationMark = '';
   var submitButton = form.querySelector('.ad-form__submit');
-  var textInput = document.querySelector('#title');
-  var houseType = document.querySelector('#type');
-  var addressInput = document.querySelector('#address');
-  var checkInField = document.querySelector('#timein');
-  var checkOutField = document.querySelector('#timeout');
-
-  // Добавляем/убираем атрибут disabled и required у контролов
-  function controlsSetAttribute(controls) {
-    textInput.setAttribute('required', 'required');
-    rentPrice.setAttribute('required', 'required');
-    controls.forEach(function (control) {
-      control.setAttribute('disabled', 'disabled');
-    });
-  }
+  var textInput = form.querySelector('#title');
+  var houseType = form.querySelector('#type');
+  var addressInput = form.querySelector('#address');
+  var checkInField = form.querySelector('#timein');
+  var checkOutField = form.querySelector('#timeout');
+  var mapFiltersSelects = mapFilters.querySelectorAll('select');
+  var mapFiltersInputs = mapFilters.querySelectorAll('input');
 
   function controlsRemoveAttribute(controls) {
     controls.forEach(function (control) {
@@ -56,10 +49,18 @@
 
   setMapDefaultState();
 
+  function setCustomAttributeOnCollection(elements, attribute, property) {
+    elements.forEach(function (elem) {
+      elem.setAttribute(attribute, property);
+    });
+  }
+
   // Задаем дефолтное состояние для карты и сразу же вызываем функцию
   function setMapDefaultState() {
-    controlsSetAttribute(formInputElements);
-    controlsSetAttribute(formSelectElements);
+    textInput.setAttribute('required', 'required');
+    rentPrice.setAttribute('required', 'required');
+    setCustomAttributeOnCollection(mapFiltersSelects, 'disabled', 'disabled');
+    setCustomAttributeOnCollection(mapFiltersInputs, 'disabled', 'disabled');
     mapFilters.setAttribute('disabled', 'disabled');
     formTextarea.setAttribute('disabled', 'disabled');
     formSubmit.setAttribute('disabled', 'disabled');
@@ -69,16 +70,16 @@
 
   // Добавляем слушателя для инициализации карты, проверяем клик левой кнопкой
 
-  mainPin.addEventListener('mousedown', checkIsLeftMouseWasPressed);
-  mainPin.addEventListener('keydown', checkIsEnterWasPressed);
+  mainPin.addEventListener('mousedown', mainPinMousedownHandler);
+  mainPin.addEventListener('keydown', mainPinKeydownHandler);
 
-  function checkIsLeftMouseWasPressed(evt) {
+  function mainPinMousedownHandler(evt) {
     if (evt.button === 0) {
       initMapActiveState();
     }
   }
 
-  function checkIsEnterWasPressed(e) {
+  function mainPinKeydownHandler(e) {
     if (e.key === 'Enter') {
       initMapActiveState();
     }
@@ -106,8 +107,8 @@
     mapFilters.removeAttribute('disabled');
     formTextarea.removeAttribute('disabled');
     formSubmit.removeAttribute('disabled');
-    mainPin.removeEventListener('mousedown', checkIsLeftMouseWasPressed);
-    mainPin.removeEventListener('keydown', checkIsEnterWasPressed);
+    mainPin.removeEventListener('mousedown', mainPinMousedownHandler);
+    mainPin.removeEventListener('keydown', mainPinKeydownHandler);
     generateCard(createCardExample());
     generatePins(pinsData);
     addressInput.value = setPinCoordinates();
@@ -156,10 +157,20 @@
     }
   });
 
-  submitButton.addEventListener('click', validatorsHandler);
+  submitButton.addEventListener('click', submitButtonClickHandler);
+
+  function submitButtonClickHandler() {
+    compareNumberOfRoomsWithNumberOfGuests();
+    checkMaxRentPrice(MAX_RENT_PRICE);
+    checkFieldTextLength(textInput, MIN_TEXT_LENGTH, MAX_TEXT_LENGTH);
+  }
 
   // Добавляем слушателя на форму для проверки соответствия в валидации
-  form.addEventListener('change', validatorsHandler);
+  form.addEventListener('change', formChangeHandler);
+
+  function formChangeHandler() {
+    compareNumberOfRoomsWithNumberOfGuests();
+  }
 
   // Выводим рандомное число
   // Добавляем +1 т.к. Math.floor округляет вниз, а Math.random(max) = 0,9 в периоде.
@@ -498,11 +509,4 @@
   checkOutField.addEventListener('change', function () {
     checkInField.value = checkOutField.value;
   });
-
-  // Вызов валидаторов с флагом
-  function validatorsHandler() {
-    compareNumberOfRoomsWithNumberOfGuests();
-    checkMaxRentPrice(MAX_RENT_PRICE);
-    checkFieldTextLength(textInput, MIN_TEXT_LENGTH, MAX_TEXT_LENGTH);
-  }
 })();
