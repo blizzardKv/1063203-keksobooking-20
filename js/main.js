@@ -451,11 +451,11 @@
   function modalCloseByEscHandler() {
     var closeButton = document.querySelector('.popup__close');
     if (closeButton) {
-      document.addEventListener('keydown', hideModalClickHandler);
+      document.addEventListener('keydown', hideModalKeydownHandler);
     }
   }
 
-  function hideModalKeydownHandler(el) {
+  function hideModalKeydownHandler(e) {
     if (e.key === 'Escape') {
       var mapCard = document.querySelector('.map__card');
       mapCard.style.display = 'none';
