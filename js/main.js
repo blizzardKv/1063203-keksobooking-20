@@ -95,6 +95,9 @@
 
   // Коллбэк, убирает класс с карты, рендерим пины, убираем атрибуты disabled, снимаем слушателя с mainPin
   function initMapActiveState() {
+    var pinsData = createMocksForData(OFFERS_NUMBER);
+    cardInitClickHandler(pinsData);
+    cardInitKeydownHandler(pinsData);
     addressInput.setAttribute('readonly', 'readonly');
     map.classList.remove('map--faded');
     form.classList.remove('ad-form--disabled');
@@ -221,8 +224,6 @@
     }
     return dataList;
   }
-
-  var pinsData = createMocksForData(OFFERS_NUMBER);
 
   // Добавляем функцию по настройке пинов. Клонируем имеющийся темплейт, выбираем в новом темплейте аватар по селектору.
   // Присваиваем значения left/top/src/alt, возвращаем новый пин
@@ -419,33 +420,36 @@
     }
   }
 
-  cardInitClickHandler(pinsData);
-  cardInitKeydownHandler(pinsData);
-
   // Функция скрытия карточки. Выбираем карточку саму, и баттон на закрытие.
   // К обсуждению - клик по острию пина
   // Клик по острию пина - не срабатывает, т.к. псевдоэлемент. Можно наверно использовать фичу с pointer-events.
   function modalCloseByClickHandler() {
     var closeButton = document.querySelector('.popup__close');
-    var mapCard = document.querySelector('.map__card');
     if (closeButton) {
-      closeButton.addEventListener('click', function () {
-        mapCard.style.display = 'none';
-      });
+      closeButton.addEventListener('click', hideModalClickHandler);
     }
+  }
+
+  function hideModalClickHandler() {
+    var mapCard = document.querySelector('.map__card');
+    mapCard.style.display = 'none';
+    document.removeEventListener('click', hideModalClickHandler);
   }
 
   // Переписать на вменяемый коллбэк, когда пойму как правильно переписать.
   function modalCloseByEscHandler() {
     var closeButton = document.querySelector('.popup__close');
-    var mapCard = document.querySelector('.map__card');
     if (closeButton) {
-      document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape') {
-          mapCard.style.display = 'none';
-        }
-      });
+      document.addEventListener('keydown', hideModalClickHandler);
     }
+  }
+
+  function hideModalKeydownHandler(el) {
+    if (e.key === 'Escape') {
+      var mapCard = document.querySelector('.map__card');
+      mapCard.style.display = 'none';
+    }
+    document.removeEventListener('click', hideModalKeydownHandler);
   }
 
   // Валидации из второй части задания.
