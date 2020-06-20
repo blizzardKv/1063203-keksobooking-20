@@ -48,7 +48,7 @@
     window.domComponents.mainPin.removeEventListener('mousedown', checkIsLeftMouseWasPressed);
     window.domComponents.mainPin.removeEventListener('keydown', checkIsEnterWasPressed);
     window.card.generateCard(window.card.createCardExample());
-    window.pin.generatePins(pinsData);
+    window.parseResponse.load(window.pin.generatePins);
     window.domComponents.addressInput.value = window.pin.setPinCoordinates();
   }
 

@@ -3,6 +3,7 @@
 (function () {
   var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
   var mainPin = document.querySelector('.map__pin--main');
+  var ALT_IMAGE_TEXT = 'Аватарка пользователя';
 
   // Задаем координаты для поля адреса. Берем с помощью getBoundingRect значения по x,y, height и width пина.
   // Добавляем значения острия, высотпу получаем из getComputedStyle
@@ -23,7 +24,7 @@
       newPin.style =
         'left: ' + data.location.x + 'px; top: ' + data.location.y + 'px;';
       pinAvatar.src = data.author.avatar;
-      pinAvatar.alt = data.author.title;
+      pinAvatar.alt = ALT_IMAGE_TEXT;
 
       return newPin;
     },
