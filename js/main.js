@@ -19,17 +19,16 @@
   }
 
   // Добавляем слушателя для инициализации карты, проверяем клик левой кнопкой
+  window.domComponents.mainPin.addEventListener('mousedown', mainPinMousedownHandler);
+  window.domComponents.mainPin.addEventListener('keydown', mainPinKeydownHandler);
 
-  window.domComponents.mainPin.addEventListener('mousedown', checkIsLeftMouseWasPressed);
-  window.domComponents.mainPin.addEventListener('keydown', checkIsEnterWasPressed);
-
-  function checkIsLeftMouseWasPressed(evt) {
+  function mainPinMousedownHandler(evt) {
     if (evt.button === 0) {
       initMapActiveState();
     }
   }
 
-  function checkIsEnterWasPressed(e) {
+  function mainPinKeydownHandler(e) {
     if (e.key === 'Enter') {
       initMapActiveState();
     }
@@ -45,8 +44,8 @@
     window.domComponents.mapFilters.removeAttribute('disabled');
     window.domComponents.formTextarea.removeAttribute('disabled');
     window.domComponents.formSubmit.removeAttribute('disabled');
-    window.domComponents.mainPin.removeEventListener('mousedown', checkIsLeftMouseWasPressed);
-    window.domComponents.mainPin.removeEventListener('keydown', checkIsEnterWasPressed);
+    window.domComponents.mainPin.removeEventListener('mousedown', mainPinMousedownHandler);
+    window.domComponents.mainPin.removeEventListener('keydown', mainPinKeydownHandler);
     window.card.generateCard(window.card.createCardExample());
     window.pin.generatePins(pinsData);
     window.domComponents.addressInput.value = window.pin.setPinCoordinates();
@@ -60,10 +59,10 @@
     }
   });
 
-  window.domComponents.submitButton.addEventListener('click', validatorsHandler);
-
   // Добавляем слушателя на форму для проверки соответствия в валидации
   window.domComponents.form.addEventListener('change', validatorsHandler);
+
+  window.domComponents.submitButton.addEventListener('click', validatorsHandler);
 
   var pinsData = window.data.createMocksForData(OFFERS_NUMBER);
 
