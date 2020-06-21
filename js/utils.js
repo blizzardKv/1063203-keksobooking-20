@@ -101,6 +101,23 @@
     // Проверяем падеж у слова "гость"
     getGuestsCases: function (noun) {
       return noun.offer.guests === 1 ? 'гостя' : 'гостей';
+    },
+
+    // Добавляем n-фотографий в объявление.
+    // Если много - то создаем для каждой отдельную "ячейку"
+    addExtraPhotos: function (template, photos) {
+      var photosTemplate = template.querySelector('.popup__photo');
+      var fragment = document.createDocumentFragment();
+      for (var i = 0; i < photos.length; i++) {
+        if (fragment.children.length !== 0) {
+          var item = photosTemplate.cloneNode();
+          item.src = photos[i];
+        } else {
+          photosTemplate.src = photos[i];
+        }
+        fragment.appendChild(item || photosTemplate);
+      }
+      return fragment;
     }
   };
 })();

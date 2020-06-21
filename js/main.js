@@ -1,6 +1,5 @@
 'use strict';
 (function () {
-  var OFFERS_NUMBER = 8;
   var MAX_RENT_PRICE = 1000000;
   var MIN_TEXT_LENGTH = 30;
   var MAX_TEXT_LENGTH = 100;
@@ -50,6 +49,8 @@
     window.card.generateCard(window.card.createCardExample());
     window.parseResponse.load(window.pin.generatePins);
     window.domComponents.addressInput.value = window.pin.setPinCoordinates();
+    window.parseResponse.load(cardInitClickHandler);
+    window.parseResponse.load(cardInitKeydownHandler);
   }
 
   // Добавляем слушателя на сабмит, если валидация успешна.
@@ -64,8 +65,6 @@
 
   // Добавляем слушателя на форму для проверки соответствия в валидации
   window.domComponents.form.addEventListener('change', validatorsHandler);
-
-  var pinsData = window.data.createMocksForData(OFFERS_NUMBER);
 
   // Вызываем нужную карточку товаров. Делегируем событие, проверяем пин ли это -
   // используем closest (т.к. eventTarget у нас - будет либо svg, либо остриё пина). Получаем у тыкаемого пина src аватарки,
@@ -85,9 +84,6 @@
       }
     });
   }
-
-  cardInitClickHandler(pinsData);
-  cardInitKeydownHandler(pinsData);
 
   // Слушатели на синхронизацию изменений времени выезда/заезда
   window.domComponents.checkInField.addEventListener('change', function () {

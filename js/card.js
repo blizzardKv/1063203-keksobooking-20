@@ -58,6 +58,7 @@
 
     fillCardWithInformation: function (cardInfo) {
       var cardTemplate = document.querySelector('.map__card');
+      var photosWrapper = cardTemplate.querySelector('.popup__photos');
 
       // Сделаем объект с шаблонами для конкатенации строк.
       var wordsTemplate = {
@@ -93,7 +94,7 @@
         wordsTemplate.comma + wordsTemplate.checkOut + cardInfo.offer.checkout, offerGuestsTime);
       offerDescription.textContent = window.utils.checkIsDataExists(cardInfo.offer.description, offerDescription);
       window.utils.checkIsDataExists(createFeatureWithIcon(offerFeatures, cardInfo.offer.features), offerFeatures);
-      offerPhoto.src = window.utils.checkIsDataExists(cardInfo.offer.photos, offerPhoto);
+      photosWrapper.appendChild(window.utils.checkIsDataExists(window.utils.addExtraPhotos(photosWrapper, (cardInfo.offer.photos)), offerPhoto));
       offerAvatar.src = window.utils.checkIsDataExists(cardInfo.author.avatar, offerAvatar);
 
       cardTemplate.style.display = 'block';
