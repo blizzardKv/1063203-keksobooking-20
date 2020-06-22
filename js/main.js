@@ -437,30 +437,30 @@
   function modalCloseByClickHandler() {
     var closeButton = document.querySelector('.popup__close');
     if (closeButton) {
-      closeButton.addEventListener('click', hideModalClickHandler);
+      closeButton.addEventListener('click', closeButtonClickHandler);
     }
   }
 
-  function hideModalClickHandler() {
+  function closeButtonClickHandler() {
     var mapCard = document.querySelector('.map__card');
     mapCard.style.display = 'none';
-    document.removeEventListener('click', hideModalClickHandler);
+    document.removeEventListener('click', closeButtonClickHandler);
   }
 
   // Переписать на вменяемый коллбэк, когда пойму как правильно переписать.
   function modalCloseByEscHandler() {
     var closeButton = document.querySelector('.popup__close');
     if (closeButton) {
-      document.addEventListener('keydown', hideModalKeydownHandler);
+      document.addEventListener('keydown', documentKeydownHandler);
     }
   }
 
-  function hideModalKeydownHandler(e) {
+  function documentKeydownHandler(e) {
     if (e.key === 'Escape') {
       var mapCard = document.querySelector('.map__card');
       mapCard.style.display = 'none';
     }
-    document.removeEventListener('click', hideModalKeydownHandler);
+    document.removeEventListener('click', documentKeydownHandler);
   }
 
   // Валидации из второй части задания.
