@@ -2,7 +2,7 @@
 (function () {
   var OFFERS_NUMBER = 8;
   var OFFER_TITLES = ['Шикарная квартира', 'Уютная комната', 'Огромный дворец', 'Просторное бунгало'];
-  var HOUSE_TYPES = ['palace', 'flat', 'house', 'bungalo'];
+  var HOUSE_TYPES = ['bungalo', 'flat', 'house', 'palace'];
   var MAX_ROOMS = 10;
   var MAX_GUESTS = 15;
   var CHECK_INS = ['12:00', '13:00', '14:00'];
@@ -13,6 +13,9 @@
   var MIN_COORDINATE_Y = 130;
   var MAX_COORDINATE_Y = 630;
   var PRICE = 10000;
+  var MAX_RENT_PRICE = 1000000;
+  var MIN_TEXT_LENGTH = 30;
+  var MAX_TEXT_LENGTH = 100;
 
   // Вводим переменные
   var map = document.querySelector('.map');
@@ -26,26 +29,23 @@
   var mapFilters = map.querySelector('.map__filters');
   var mainPin = map.querySelector('.map__pin--main');
   var roomNumberValue = form.querySelector('#room_number');
+  var rentPrice = form.querySelector('#price');
   var guestsNumber = form.querySelector('#capacity');
   var validationMark = '';
   var submitButton = form.querySelector('.ad-form__submit');
+  var textInput = form.querySelector('#title');
+  var houseType = form.querySelector('#type');
+  var addressInput = form.querySelector('#address');
+  var checkInField = form.querySelector('#timein');
+  var checkOutField = form.querySelector('#timeout');
   var mapFiltersSelects = mapFilters.querySelectorAll('select');
   var mapFiltersInputs = mapFilters.querySelectorAll('input');
-
-  // Добавляем/убираем атрибут disabled у контролов
-  function controlsSetAttribute(controls) {
-    controls.forEach(function (control) {
-      control.setAttribute('disabled', 'disabled');
-    });
-  }
 
   function controlsRemoveAttribute(controls) {
     controls.forEach(function (control) {
       control.removeAttribute('disabled');
     });
   }
-
-  setMapDefaultState();
 
   function setCustomAttributeOnCollection(elements, attribute, property) {
     elements.forEach(function (elem) {
@@ -55,19 +55,16 @@
 
   // Задаем дефолтное состояние для карты и сразу же вызываем функцию
   function setMapDefaultState() {
-    controlsSetAttribute(formInputElements);
-    controlsSetAttribute(formSelectElements);
+    textInput.setAttribute('required', 'required');
+    rentPrice.setAttribute('required', 'required');
+    setCustomAttributeOnCollection(mapFiltersSelects, 'disabled', 'disabled');
+    setCustomAttributeOnCollection(mapFiltersInputs, 'disabled', 'disabled');
     mapFilters.setAttribute('disabled', 'disabled');
     formTextarea.setAttribute('disabled', 'disabled');
     formSubmit.setAttribute('disabled', 'disabled');
-    setCustomAttributeOnCollection(mapFiltersSelects, 'disabled', 'disabled');
-    setCustomAttributeOnCollection(mapFiltersInputs, 'disabled', 'disabled');
+    // Чтобы не мозолило глаза, а то дефолтный плейсхолдер не соответствует дефолтному значению
+    rentPrice.setAttribute('placeholder', '1000');
   }
-
-  // Добавляем слушателя для инициализации карты, проверяем клик левой кнопкой
-
-  mainPin.addEventListener('mousedown', mainPinMousedownHandler);
-  mainPin.addEventListener('keydown', mainPinKeydownHandler);
 
   function mainPinMousedownHandler(evt) {
     if (evt.button === 0) {
@@ -92,18 +89,28 @@
 
   // Коллбэк, убирает класс с карты, рендерим пины, убираем атрибуты disabled, снимаем слушателя с mainPin
   function initMapActiveState() {
-    var addressInput = document.querySelector('#address');
+    var pinsData = createMocksForData(OFFERS_NUMBER);
+
+    cardInitClickHandler(pinsData);
+    cardInitKeydownHandler(pinsData);
+    generatePins(pinsData);
+    generateCard(createCardExample());
+
+    addressInput.setAttribute('readonly', 'readonly');
+    addressInput.value = setPinCoordinates();
+
     map.classList.remove('map--faded');
     form.classList.remove('ad-form--disabled');
+
     controlsRemoveAttribute(formInputElements);
     controlsRemoveAttribute(formSelectElements);
+
     mapFilters.removeAttribute('disabled');
     formTextarea.removeAttribute('disabled');
     formSubmit.removeAttribute('disabled');
-    generatePins(createMocksForData(OFFERS_NUMBER));
+
     mainPin.removeEventListener('mousedown', mainPinMousedownHandler);
     mainPin.removeEventListener('keydown', mainPinKeydownHandler);
-    addressInput.value = setPinCoordinates();
   }
 
   // Создаем функцию валидации соответствия количеству комнат количества гостей
@@ -141,22 +148,11 @@
     }
   }
 
-  // Добавляем слушателя на сабмит, если валидация успешна.
-  form.addEventListener('submit', function (evt) {
-    evt.preventDefault();
-    if (validationMark === true) {
-      form.submit();
-    }
-  });
-
-  submitButton.addEventListener('click', submitButtonClickHandler);
-
   function submitButtonClickHandler() {
     compareNumberOfRoomsWithNumberOfGuests();
+    checkMaxRentPrice(MAX_RENT_PRICE);
+    checkFieldTextLength(textInput, MIN_TEXT_LENGTH, MAX_TEXT_LENGTH);
   }
-
-  // Добавляем слушателя на форму для проверки соответствия в валидации
-  form.addEventListener('change', formChangeHandler);
 
   function formChangeHandler() {
     compareNumberOfRoomsWithNumberOfGuests();
@@ -257,132 +253,261 @@
 
   // Функция по генерации информации для карточки объявления.
   // Клонируем имеющийся шаблон, выбираем в новом шаблоне элементы, добавляем информацию.
-  // function fillCardWithInformation(cardInfo) {
-  //   var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
-  //   var newCard = cardTemplate.cloneNode(true);
-  //
-  //   // Сделаем объект с шаблонами для конкатенации строк.
-  //   var wordsTemplate = {
-  //     nightCost: ' ₽/ночь.',
-  //     pretext: ' для ',
-  //     space: ' ',
-  //     checkIn: 'Заезд после ',
-  //     checkOut: 'выезд до ',
-  //     comma: ', '
-  //   };
-  //
-  //   // Выбираем каждый элемент в переменную
-  //   var offerTitle = newCard.querySelector('.popup__title');
-  //   var offerAddress = newCard.querySelector('.popup__text--address');
-  //   var offerPrice = newCard.querySelector('.popup__text--price');
-  //   var offerType = newCard.querySelector('.popup__type');
-  //   var offerGuestsInfo = newCard.querySelector('.popup__text--capacity');
-  //   var offerGuestsTime = newCard.querySelector('.popup__text--time');
-  //   var offerDescription = newCard.querySelector('.popup__description');
-  //   var offerFeatures = newCard.querySelector('.popup__features');
-  //   var offerPhoto = newCard.querySelector('.popup__photos img');
-  //   var offerAvatar = newCard.querySelector('.popup__avatar');
-  //
-  //   // Проверяем элемент на наличие данных, если она есть, рендерим)
-  //   offerTitle.textContent = checkIsDataExists(cardInfo.offer.title, offerTitle);
-  //   offerAddress.textContent = checkIsDataExists(cardInfo.offer.address, offerAddress);
-  //   offerPrice.textContent = checkIsDataExists(cardInfo.offer.price + wordsTemplate.nightCost, offerPrice);
-  //   offerType.textContent = checkIsDataExists(translateNamesOfHouses(cardInfo), offerType);
-  //   offerGuestsInfo.textContent = checkIsDataExists(cardInfo.offer.rooms + wordsTemplate.space + getRoomsCases(cardInfo) + wordsTemplate.pretext + cardInfo.offer.guests + wordsTemplate.space + getGuestsCases(cardInfo), offerGuestsInfo);
-  //   offerGuestsTime.textContent = checkIsDataExists(wordsTemplate.checkIn + cardInfo.offer.checkin + wordsTemplate.comma + wordsTemplate.checkOut + cardInfo.offer.checkout, offerGuestsTime);
-  //   offerDescription.textContent = checkIsDataExists(cardInfo.offer.description, offerDescription);
-  //   checkIsDataExists(createFeatureWithIcon(offerFeatures, cardInfo.offer.features), offerFeatures);
-  //   offerPhoto.src = checkIsDataExists(cardInfo.offer.photos, offerPhoto);
-  //   offerAvatar.src = checkIsDataExists(cardInfo.author.avatar, offerAvatar);
-  //
-  //   return newCard;
-  // }
+  function createCardExample() {
+    var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
+    cardTemplate.style.display = 'none';
+    return cardTemplate.cloneNode(true);
+  }
+
+  function fillCardWithInformation(cardInfo) {
+    var cardTemplate = document.querySelector('.map__card');
+
+    // Сделаем объект с шаблонами для конкатенации строк.
+    var wordsTemplate = {
+      nightCost: ' ₽/ночь.',
+      pretext: ' для ',
+      space: ' ',
+      checkIn: 'Заезд после ',
+      checkOut: 'выезд до ',
+      comma: ', '
+    };
+
+    // Выбираем каждый элемент в переменную
+    var offerTitle = cardTemplate.querySelector('.popup__title');
+    var offerAddress = cardTemplate.querySelector('.popup__text--address');
+    var offerPrice = cardTemplate.querySelector('.popup__text--price');
+    var offerType = cardTemplate.querySelector('.popup__type');
+    var offerGuestsInfo = cardTemplate.querySelector('.popup__text--capacity');
+    var offerGuestsTime = cardTemplate.querySelector('.popup__text--time');
+    var offerDescription = cardTemplate.querySelector('.popup__description');
+    var offerFeatures = cardTemplate.querySelector('.popup__features');
+    var offerPhoto = cardTemplate.querySelector('.popup__photos img');
+    var offerAvatar = cardTemplate.querySelector('.popup__avatar');
+
+    // Проверяем элемент на наличие данных, если она есть, рендерим)
+    offerTitle.textContent = checkIsDataExists(cardInfo.offer.title, offerTitle);
+    offerAddress.textContent = checkIsDataExists(cardInfo.offer.address, offerAddress);
+    offerPrice.textContent = checkIsDataExists(cardInfo.offer.price + wordsTemplate.nightCost, offerPrice);
+    offerType.textContent = checkIsDataExists(translateNamesOfHouses(cardInfo), offerType);
+    offerGuestsInfo.textContent = checkIsDataExists(cardInfo.offer.rooms + wordsTemplate.space + getRoomsCases(cardInfo) + wordsTemplate.pretext + cardInfo.offer.guests + wordsTemplate.space + getGuestsCases(cardInfo), offerGuestsInfo);
+    offerGuestsTime.textContent = checkIsDataExists(wordsTemplate.checkIn + cardInfo.offer.checkin + wordsTemplate.comma + wordsTemplate.checkOut + cardInfo.offer.checkout, offerGuestsTime);
+    offerDescription.textContent = checkIsDataExists(cardInfo.offer.description, offerDescription);
+    checkIsDataExists(createFeatureWithIcon(offerFeatures, cardInfo.offer.features), offerFeatures);
+    offerPhoto.src = checkIsDataExists(cardInfo.offer.photos, offerPhoto);
+    offerAvatar.src = checkIsDataExists(cardInfo.author.avatar, offerAvatar);
+
+    cardTemplate.style.display = 'block';
+  }
 
   // Добавляем рендер каждой фичи в зависимости от получаемой даты.
   // Создаем пустой фрагмент, проходим по коллекции фич методом forEach.
   // "Стираем" данные в elem - с помощью textContent, иначе сохраняются дефолтные картинки фич.
   // За каждый имеющийся элемент коллекции - создаем li с заданными классами в соответствии с шаблоном
   // Вставляем полученную лишку в пустой докФрагмент. Далее добавляем получившийся докФрагмент в элемент шаблона.
-  // function createFeatureWithIcon(elem, features) {
-  //   var fragment = document.createDocumentFragment();
-  //   elem.textContent = '';
-  //
-  //   features.forEach(function (feature) {
-  //     var elemContainer = document.createElement('li');
-  //     var featureClass = 'popup__feature--' + feature;
-  //     elemContainer.classList.add('popup__feature', featureClass);
-  //     fragment.appendChild(elemContainer);
-  //   });
-  //
-  //   return elem.appendChild(fragment);
-  // }
-  //
-  // // Проверяем наличие даты для рендера.
-  // // Если её нет или она undefined, то скрываем элемент, куда должна была отправиться дата.
-  // function checkIsDataExists(data, el) {
-  //   if (data.length === 0 || data.length === 'undefined') {
-  //     el.style.display = 'none';
-  //   }
-  //
-  //   return data;
-  // }
-  //
-  // // Проходим конструкцией switch по имеющимся данным по типу домов. Выводим согласно совпадающей строке.
-  // function translateNamesOfHouses(house) {
-  //   var translate = '';
-  //   switch (house.offer.type) {
-  //     case 'flat':
-  //       translate = 'Комната';
-  //       break;
-  //
-  //     case 'bungalo':
-  //       translate = 'Бунгало';
-  //       break;
-  //
-  //     case 'house':
-  //       translate = 'Дом';
-  //       break;
-  //
-  //     case 'palace':
-  //       translate = 'Дворец';
-  //       break;
-  //   }
-  //
-  //   return translate;
-  // }
-  //
-  // // Проходим конструкцией switch по имеющимся данным по количеству комнат. Изменяем падежи существительных.
-  // function getRoomsCases(noun) {
-  //   var switchedNoun = '';
-  //   switch (noun.offer.rooms) {
-  //     case 1:
-  //       switchedNoun = 'комната';
-  //       break;
-  //     case 2:
-  //     case 3:
-  //     case 4:
-  //       switchedNoun = 'комнаты';
-  //       break;
-  //     default:
-  //       switchedNoun = 'комнат';
-  //       break;
-  //   }
-  //
-  //   return switchedNoun;
-  // }
-  //
-  // // Проверяем падеж у слова "гость"
-  // function getGuestsCases(noun) {
-  //   return noun.offer.guests === 1 ? 'гостя' : 'гостей';
-  // }
+  function createFeatureWithIcon(elem, features) {
+    var fragment = document.createDocumentFragment();
+    elem.textContent = '';
+
+    features.forEach(function (feature) {
+      var elemContainer = document.createElement('li');
+      var featureClass = 'popup__feature--' + feature;
+      elemContainer.classList.add('popup__feature', featureClass);
+      fragment.appendChild(elemContainer);
+    });
+
+    return elem.appendChild(fragment);
+  }
+
+  // Проверяем наличие даты для рендера.
+  // Если её нет или она undefined, то скрываем элемент, куда должна была отправиться дата.
+  function checkIsDataExists(data, el) {
+    if (data.length === 0 || data.length === 'undefined') {
+      el.style.display = 'none';
+    }
+
+    return data;
+  }
+
+  // Проходим конструкцией switch по имеющимся данным по типу домов. Выводим согласно совпадающей строке.
+  function translateNamesOfHouses(house) {
+    var translate = '';
+    switch (house.offer.type) {
+      case 'flat':
+        translate = 'Комната';
+        break;
+
+      case 'bungalo':
+        translate = 'Бунгало';
+        break;
+
+      case 'house':
+        translate = 'Дом';
+        break;
+
+      case 'palace':
+        translate = 'Дворец';
+        break;
+    }
+
+    return translate;
+  }
+
+  // Проходим конструкцией switch по имеющимся данным по количеству комнат. Изменяем падежи существительных.
+  function getRoomsCases(noun) {
+    var switchedNoun = '';
+    switch (noun.offer.rooms) {
+      case 1:
+        switchedNoun = 'комната';
+        break;
+      case 2:
+      case 3:
+      case 4:
+        switchedNoun = 'комнаты';
+        break;
+      default:
+        switchedNoun = 'комнат';
+        break;
+    }
+
+    return switchedNoun;
+  }
+
+  // Проверяем падеж у слова "гость"
+  function getGuestsCases(noun) {
+    return noun.offer.guests === 1 ? 'гостя' : 'гостей';
+  }
 
   // Создаем карточку для первого объявления. Создаем пустой фрагмент, заполняем информацией из функции выше, вставляем его.
-  // function createCard(cardInfo) {
-  //   var fragment = document.createDocumentFragment();
-  //
-  //   fragment.appendChild(fillCardWithInformation(cardInfo));
-  //   mapPinsArea.after(fragment);
-  // }
+  function generateCard(cardInfo) {
+    var fragment = document.createDocumentFragment();
+    fragment.appendChild(cardInfo);
 
-  // createCard(createMocksForData(OFFERS_NUMBER)[0]);
+    mapPinsArea.after(fragment);
+  }
+
+  // Вызываем нужную карточку товаров. Делегируем событие, проверяем пин ли это -
+  // используем closest (т.к. eventTarget у нас - будет либо svg, либо остриё пина). Получаем у тыкаемого пина src аватарки,
+  // проходим циклом по массиву с датой, выводим только нужную карточку с совпадающей аватаркой.
+  // сейчас проверка по аватарке, а так по хорошему использовался бы какой-то элемент типа id
+  function cardInitClickHandler(cardInfo) {
+    mapPinsArea.addEventListener('click', function (evt) {
+      createAppropriateCard(evt, cardInfo);
+    });
+  }
+
+  // Не работает, вероятно из-за closest.
+  function cardInitKeydownHandler(cardInfo) {
+    document.addEventListener('keydown', function (evt) {
+      if (evt.key === 'Enter') {
+        createAppropriateCard(evt, cardInfo);
+      }
+    });
+  }
+
+  function createAppropriateCard(evt, cardInfo) {
+    if (evt.target.closest('.map__pin') && !evt.target.closest('.map__pin--main')) {
+      var pinAvatarSrc = evt.target.getAttribute('src');
+      for (var i = 0; i < cardInfo.length; i++) {
+        if (pinAvatarSrc === cardInfo[i].author.avatar) {
+          fillCardWithInformation(cardInfo[i]);
+          modalCloseHandler();
+        }
+      }
+    }
+  }
+
+  // Функция скрытия карточки. Выбираем карточку саму, и баттон на закрытие.
+  // К обсуждению - клик по острию пина
+  // Клик по острию пина - не срабатывает, т.к. псевдоэлемент. Можно наверно использовать фичу с pointer-events.
+  function modalCloseHandler() {
+    var closeButton = document.querySelector('.popup__close');
+    if (closeButton) {
+      closeButton.addEventListener('click', closeButtonClickHandler);
+      document.addEventListener('keydown', documentKeydownHandler);
+    }
+  }
+
+  function closeButtonClickHandler(evt) {
+    if (evt.button === 0) {
+      var mapCard = document.querySelector('.map__card');
+      mapCard.style.display = 'none';
+      document.removeEventListener('click', closeButtonClickHandler);
+    }
+  }
+
+  function documentKeydownHandler(e) {
+    if (e.key === 'Escape') {
+      var closeButton = document.querySelector('.popup__close');
+      var mapCard = document.querySelector('.map__card');
+      mapCard.style.display = 'none';
+      closeButton.removeEventListener('click', documentKeydownHandler);
+    }
+  }
+
+  // Валидации из второй части задания.
+  // Проверка длины поля
+  function checkFieldTextLength(textField, minLength, maxLength) {
+    if (textField.value.length > minLength && textField.value.length < maxLength) {
+      textField.setCustomValidity('');
+    } else {
+      textField.setCustomValidity('Минимальная длина поля - 30 символов, максимальная - 100 символов');
+      validationMark = true;
+    }
+  }
+
+  // Проверка максимальной стоимости аренды
+  function checkMaxRentPrice(maxPrice) {
+    if (rentPrice.value > maxPrice) {
+      validationMark = false;
+      rentPrice.setCustomValidity('Максимальная стоимость аренды - 1000000');
+    } else {
+      validationMark = true;
+    }
+  }
+
+  setMapDefaultState();
+
+  // Добавляем слушателя для инициализации карты, проверяем клик левой кнопкой
+
+  mainPin.addEventListener('mousedown', mainPinMousedownHandler);
+  mainPin.addEventListener('keydown', mainPinKeydownHandler);
+
+  // Добавляем слушателя на форму для проверки соответствия в валидации
+  form.addEventListener('change', formChangeHandler);
+
+  // Добавляем слушателя на сабмит, если валидация успешна.
+  form.addEventListener('submit', function (evt) {
+    evt.preventDefault();
+    if (validationMark === true) {
+      form.submit();
+    }
+  });
+
+  submitButton.addEventListener('click', submitButtonClickHandler);
+
+  // Слушатель на изменение типа жилья и выставление соответствующей минимальной цены аренды
+  houseType.addEventListener('change', function () {
+    if (houseType.value === 'bungalo') {
+      rentPrice.min = 0;
+      rentPrice.placeholder = 0;
+    } else if (houseType.value === 'flat') {
+      rentPrice.min = 1000;
+      rentPrice.placeholder = 1000;
+    } else if (houseType.value === 'house') {
+      rentPrice.min = 5000;
+      rentPrice.placeholder = 5000;
+    } else if (houseType.value === 'palace') {
+      rentPrice.min = 10000;
+      rentPrice.placeholder = 10000;
+    }
+  });
+
+  // Слушатели на синхронизацию изменений времени выезда/заезда
+  checkInField.addEventListener('change', function () {
+    checkOutField.value = checkInField.value;
+  });
+
+  checkOutField.addEventListener('change', function () {
+    checkInField.value = checkOutField.value;
+  });
 })();
