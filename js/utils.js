@@ -101,6 +101,12 @@
     // Проверяем падеж у слова "гость"
     getGuestsCases: function (noun) {
       return noun.offer.guests === 1 ? 'гостя' : 'гостей';
+    },
+
+    setCustomAttributeOnCollection: function (elements, attribute, property) {
+      elements.forEach(function (elem) {
+        elem.setAttribute(attribute, property);
+      });
     }
   };
 })();
