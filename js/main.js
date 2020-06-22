@@ -21,10 +21,10 @@
 
   // Коллбэк, убирает класс с карты, рендерим пины, убираем атрибуты disabled, снимаем слушателя с mainPin
   function initMapActiveState() {
-    window.parseResponse.load(cardInitClickHandler);
-    window.parseResponse.load(cardInitKeydownHandler);
+    window.parseResponse.load(window.parseResponse.urlLoad, cardInitClickHandler);
+    window.parseResponse.load(window.parseResponse.urlLoad, cardInitKeydownHandler);
 
-    window.parseResponse.load(window.pin.generatePins);
+    window.parseResponse.load(window.parseResponse.urlLoad, window.pin.generatePins);
     window.card.generateCard(window.card.createCardExample());
 
     window.domComponents.addressInput.setAttribute('readonly', 'readonly');
