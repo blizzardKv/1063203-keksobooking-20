@@ -410,8 +410,7 @@
       for (var i = 0; i < cardInfo.length; i++) {
         if (pinAvatarSrc === cardInfo[i].author.avatar) {
           fillCardWithInformation(cardInfo[i]);
-          modalCloseByClickHandler();
-          modalCloseByEscHandler();
+          modalCloseHandler();
         }
       }
     }
@@ -420,33 +419,29 @@
   // Функция скрытия карточки. Выбираем карточку саму, и баттон на закрытие.
   // К обсуждению - клик по острию пина
   // Клик по острию пина - не срабатывает, т.к. псевдоэлемент. Можно наверно использовать фичу с pointer-events.
-  function modalCloseByClickHandler() {
+  function modalCloseHandler() {
     var closeButton = document.querySelector('.popup__close');
     if (closeButton) {
       closeButton.addEventListener('click', closeButtonClickHandler);
+      document.addEventListener('keydown', documentKeydownHandler);
     }
   }
 
-  function closeButtonClickHandler() {
-    var mapCard = document.querySelector('.map__card');
-    mapCard.style.display = 'none';
-    document.removeEventListener('click', closeButtonClickHandler);
-  }
-
-  // Переписать на вменяемый коллбэк, когда пойму как правильно переписать.
-  function modalCloseByEscHandler() {
-    var closeButton = document.querySelector('.popup__close');
-    if (closeButton) {
-      document.addEventListener('keydown', documentKeydownHandler);
+  function closeButtonClickHandler(evt) {
+    if (evt.button === 0) {
+      var mapCard = document.querySelector('.map__card');
+      mapCard.style.display = 'none';
+      document.removeEventListener('click', closeButtonClickHandler);
     }
   }
 
   function documentKeydownHandler(e) {
     if (e.key === 'Escape') {
+      var closeButton = document.querySelector('.popup__close');
       var mapCard = document.querySelector('.map__card');
       mapCard.style.display = 'none';
+      closeButton.removeEventListener('click', documentKeydownHandler);
     }
-    document.removeEventListener('click', documentKeydownHandler);
   }
 
   // Валидации из второй части задания.
