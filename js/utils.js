@@ -103,6 +103,12 @@
       return noun.offer.guests === 1 ? 'гостя' : 'гостей';
     },
 
+    setCustomAttributeOnCollection: function (elements, attribute, property) {
+      elements.forEach(function (elem) {
+        elem.setAttribute(attribute, property);
+      });
+    },
+
     // Добавляем n-фотографий в объявление.
     // Если много - то создаем для каждой отдельную "ячейку"
     addExtraPhotos: function (template, photos) {
