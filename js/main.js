@@ -47,8 +47,6 @@
     });
   }
 
-  setMapDefaultState();
-
   function setCustomAttributeOnCollection(elements, attribute, property) {
     elements.forEach(function (elem) {
       elem.setAttribute(attribute, property);
@@ -67,11 +65,6 @@
     // Чтобы не мозолило глаза, а то дефолтный плейсхолдер не соответствует дефолтному значению
     rentPrice.setAttribute('placeholder', '1000');
   }
-
-  // Добавляем слушателя для инициализации карты, проверяем клик левой кнопкой
-
-  mainPin.addEventListener('mousedown', mainPinMousedownHandler);
-  mainPin.addEventListener('keydown', mainPinKeydownHandler);
 
   function mainPinMousedownHandler(evt) {
     if (evt.button === 0) {
@@ -97,21 +90,27 @@
   // Коллбэк, убирает класс с карты, рендерим пины, убираем атрибуты disabled, снимаем слушателя с mainPin
   function initMapActiveState() {
     var pinsData = createMocksForData(OFFERS_NUMBER);
+
     cardInitClickHandler(pinsData);
     cardInitKeydownHandler(pinsData);
+    generatePins(pinsData);
+    generateCard(createCardExample());
+
     addressInput.setAttribute('readonly', 'readonly');
+    addressInput.value = setPinCoordinates();
+
     map.classList.remove('map--faded');
     form.classList.remove('ad-form--disabled');
+
     controlsRemoveAttribute(formInputElements);
     controlsRemoveAttribute(formSelectElements);
+
     mapFilters.removeAttribute('disabled');
     formTextarea.removeAttribute('disabled');
     formSubmit.removeAttribute('disabled');
+
     mainPin.removeEventListener('mousedown', mainPinMousedownHandler);
     mainPin.removeEventListener('keydown', mainPinKeydownHandler);
-    generateCard(createCardExample());
-    generatePins(pinsData);
-    addressInput.value = setPinCoordinates();
   }
 
   // Создаем функцию валидации соответствия количеству комнат количества гостей
@@ -149,24 +148,11 @@
     }
   }
 
-  // Добавляем слушателя на сабмит, если валидация успешна.
-  form.addEventListener('submit', function (evt) {
-    evt.preventDefault();
-    if (validationMark === true) {
-      form.submit();
-    }
-  });
-
-  submitButton.addEventListener('click', submitButtonClickHandler);
-
   function submitButtonClickHandler() {
     compareNumberOfRoomsWithNumberOfGuests();
     checkMaxRentPrice(MAX_RENT_PRICE);
     checkFieldTextLength(textInput, MIN_TEXT_LENGTH, MAX_TEXT_LENGTH);
   }
-
-  // Добавляем слушателя на форму для проверки соответствия в валидации
-  form.addEventListener('change', formChangeHandler);
 
   function formChangeHandler() {
     compareNumberOfRoomsWithNumberOfGuests();
@@ -483,6 +469,26 @@
       validationMark = true;
     }
   }
+
+  setMapDefaultState();
+
+  // Добавляем слушателя для инициализации карты, проверяем клик левой кнопкой
+
+  mainPin.addEventListener('mousedown', mainPinMousedownHandler);
+  mainPin.addEventListener('keydown', mainPinKeydownHandler);
+
+  // Добавляем слушателя на форму для проверки соответствия в валидации
+  form.addEventListener('change', formChangeHandler);
+
+  // Добавляем слушателя на сабмит, если валидация успешна.
+  form.addEventListener('submit', function (evt) {
+    evt.preventDefault();
+    if (validationMark === true) {
+      form.submit();
+    }
+  });
+
+  submitButton.addEventListener('click', submitButtonClickHandler);
 
   // Слушатель на изменение типа жилья и выставление соответствующей минимальной цены аренды
   houseType.addEventListener('change', function () {
