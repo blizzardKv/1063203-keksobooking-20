@@ -47,6 +47,8 @@
 
   setMapDefaultState();
 
+  window.pin.moveMainPin();
+
   // Слушатели родительского модуля
   window.domComponents.mainPin.addEventListener('mousedown', mainPinMousedownHandler);
   window.domComponents.mainPin.addEventListener('keydown', mainPinKeydownHandler);
