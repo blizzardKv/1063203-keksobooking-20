@@ -113,11 +113,11 @@
     // Если много - то создаем для каждой отдельную "ячейку"
     addExtraPhotos: function (template, photos) {
       var photosTemplate = template.querySelector('.popup__photo');
-      var item0 = photosTemplate.cloneNode();
+      var clonedTemplate = photosTemplate.cloneNode();
       template.innerHTML = '';
       var fragment = document.createDocumentFragment();
       for (var i = 0; i < photos.length; i++) {
-        var item = item0.cloneNode();
+        var item = clonedTemplate.cloneNode();
         item.src = photos[i];
         fragment.appendChild(item);
       }

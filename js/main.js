@@ -33,8 +33,8 @@
     window.domComponents.map.classList.remove('map--faded');
     window.domComponents.form.classList.remove('ad-form--disabled');
 
-    window.utils.controlsRemoveAttribute(window.domComponents.mapFiltersSelects);
-    window.utils.controlsRemoveAttribute(window.domComponents.mapFiltersInputs);
+    window.utils.controlsRemoveAttribute(window.domComponents.formInputElements);
+    window.utils.controlsRemoveAttribute(window.domComponents.formSelectElements);
 
     window.domComponents.mapFilters.removeAttribute('disabled');
     window.domComponents.formTextarea.removeAttribute('disabled');
