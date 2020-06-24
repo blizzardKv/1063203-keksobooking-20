@@ -120,7 +120,7 @@
       var clonedTemplate = photosTemplate.cloneNode();
       if (photos.length !== 0) {
         template.innerHTML = '';
-        template.style.display = 'block';
+        template.style.removeProperty('display');
       } else {
         template.style.display = 'none';
       }
