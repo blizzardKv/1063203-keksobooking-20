@@ -68,7 +68,7 @@
         wordsTemplate.comma + wordsTemplate.checkOut + cardInfo.offer.checkout, offerGuestsTime);
       offerDescription.textContent = window.utils.checkIsDataExists(cardInfo.offer.description, offerDescription);
       window.utils.checkIsDataExists(createFeatureWithIcon(offerFeatures, cardInfo.offer.features), offerFeatures);
-      photosWrapper.appendChild(window.utils.checkIsDataExists(window.utils.addExtraPhotos(photosWrapper, (cardInfo.offer.photos)), offerPhoto));
+      photosWrapper.appendChild(window.utils.addExtraPhotos(photosWrapper, cardInfo.offer.photos, offerPhoto));
       offerAvatar.src = window.utils.checkIsDataExists(cardInfo.author.avatar, offerAvatar);
 
       cardTemplate.style.display = 'block';
