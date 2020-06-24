@@ -49,6 +49,8 @@
     checkIsDataExists: function (data, el) {
       if (data.length === 0 || data.length === 'undefined') {
         el.style.display = 'none';
+      } else {
+        el.style.display = 'block';
       }
 
       return data;
@@ -112,12 +114,19 @@
     // Добавляем n-фотографий в объявление.
     // Если много - то создаем для каждой отдельную "ячейку"
     addExtraPhotos: function (template, photos) {
+      // console.log(template);
+      // debugger;
       var photosTemplate = template.querySelector('.popup__photo');
-      var item0 = photosTemplate.cloneNode();
-      template.innerHTML = '';
+      var clonedTemplate = photosTemplate.cloneNode();
+      if (photos.length !== 0) {
+        template.innerHTML = '';
+        template.style.display = 'block';
+      } else {
+        template.style.display = 'none';
+      }
       var fragment = document.createDocumentFragment();
       for (var i = 0; i < photos.length; i++) {
-        var item = item0.cloneNode();
+        var item = clonedTemplate.cloneNode();
         item.src = photos[i];
         fragment.appendChild(item);
       }
