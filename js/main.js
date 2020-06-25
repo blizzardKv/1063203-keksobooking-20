@@ -36,6 +36,9 @@
     window.utils.controlsRemoveAttribute(window.domComponents.formInputElements);
     window.utils.controlsRemoveAttribute(window.domComponents.formSelectElements);
 
+    window.utils.controlsRemoveAttribute(window.domComponents.mapFiltersInputs);
+    window.utils.controlsRemoveAttribute(window.domComponents.mapFiltersSelects);
+
     window.domComponents.mapFilters.removeAttribute('disabled');
     window.domComponents.formTextarea.removeAttribute('disabled');
     window.domComponents.formSubmit.removeAttribute('disabled');
@@ -83,10 +86,18 @@
   }
 
   // Валидация
-  function submitButtonClickHandler() {
+  function submitButtonClickHandler(evt) {
+    evt.preventDefault();
     window.validators.compareNumberOfRoomsWithNumberOfGuests();
     window.validators.checkMaxRentPrice(MAX_RENT_PRICE);
     window.validators.checkFieldTextLength(window.domComponents.textInput, MIN_TEXT_LENGTH, MAX_TEXT_LENGTH);
+    window.parseResponse.save(new FormData(window.domComponents.form), function () {
+      if (window.domComponents.validationMark === true) {
+        window.successUpload.handler();
+      }
+    }, function () {
+      window.failedUpload.handler();
+    });
   }
 
   window.domComponents.mainPin.addEventListener('mousedown', mainPinMousedownHandler);
@@ -119,8 +130,7 @@
   window.domComponents.form.addEventListener('change', formChangeHandler);
 
   // Добавляем слушателя на сабмит, если валидация успешна.
-  window.domComponents.form.addEventListener('submit', function (evt) {
-    evt.preventDefault();
+  window.domComponents.form.addEventListener('submit', function () {
     if (window.domComponents.validationMark === true) {
       window.domComponents.form.submit();
     }
