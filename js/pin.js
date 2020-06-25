@@ -54,7 +54,7 @@
         };
 
         // Добавляем коллбэк на перетаскивание элемента
-        var onMouseMove = function (moveEvt) {
+        var mouseMoveHandler = function (moveEvt) {
           moveEvt.preventDefault();
 
           // Получаем сдвиг относительно от начальных координат.
@@ -84,17 +84,17 @@
         };
 
         // На поднятии клавиши мышки - снимаем слушаетелей.
-        var onMouseUp = function (upEvt) {
+        var mouseUpHandler = function (upEvt) {
           upEvt.preventDefault();
 
-          document.removeEventListener('mousemove', onMouseMove);
-          document.removeEventListener('mouseup', onMouseUp);
+          document.removeEventListener('mousemove', mouseMoveHandler);
+          document.removeEventListener('mouseup', mouseUpHandler);
         };
 
         // Выполняем реинит слушателей, иначе пин после первого отпускания кнопки мыши
         // не будет больше перетаскивать
-        document.addEventListener('mousemove', onMouseMove);
-        document.addEventListener('mouseup', onMouseUp);
+        document.addEventListener('mousemove', mouseMoveHandler);
+        document.addEventListener('mouseup', mouseUpHandler);
       });
     }
   };

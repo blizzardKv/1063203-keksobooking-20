@@ -104,19 +104,19 @@
   }
 
   function closeButtonClickHandler(evt) {
+    var closeButton = document.querySelector('.popup__close');
     if (evt.button === 0) {
       var mapCard = document.querySelector('.map__card');
       mapCard.style.display = 'none';
-      document.removeEventListener('click', closeButtonClickHandler);
+      closeButton.removeEventListener('click', closeButtonClickHandler);
     }
   }
 
-  function documentKeydownHandler(e) {
-    if (e.key === 'Escape') {
-      var closeButton = document.querySelector('.popup__close');
+  function documentKeydownHandler(evt) {
+    if (evt.key === 'Escape') {
       var mapCard = document.querySelector('.map__card');
       mapCard.style.display = 'none';
-      closeButton.removeEventListener('click', documentKeydownHandler);
+      document.removeEventListener('keydown', documentKeydownHandler);
     }
   }
 })();

@@ -76,8 +76,8 @@
     }
   }
 
-  function mainPinKeydownHandler(e) {
-    if (e.key === 'Enter') {
+  function mainPinKeydownHandler(evt) {
+    if (evt.key === 'Enter') {
       initMapActiveState();
     }
   }
