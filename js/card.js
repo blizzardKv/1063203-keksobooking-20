@@ -20,6 +20,32 @@
     return elem.appendChild(fragment);
   }
 
+  // Хэндлеры карточек
+  function modalCloseHandler() {
+    var closeButton = document.querySelector('.popup__close');
+    if (closeButton) {
+      closeButton.addEventListener('click', closeButtonClickHandler);
+      document.addEventListener('keydown', documentKeydownHandler);
+    }
+  }
+
+  function closeButtonClickHandler(evt) {
+    var closeButton = document.querySelector('.popup__close');
+    if (evt.button === 0) {
+      var mapCard = document.querySelector('.map__card');
+      mapCard.style.display = 'none';
+      closeButton.removeEventListener('click', closeButtonClickHandler);
+    }
+  }
+
+  function documentKeydownHandler(evt) {
+    if (evt.key === 'Escape') {
+      var mapCard = document.querySelector('.map__card');
+      mapCard.style.display = 'none';
+      document.removeEventListener('keydown', documentKeydownHandler);
+    }
+  }
+
   window.card = {
     // Запускаем цепочку функций по генерации пинов.
     // Функция по генерации информации для карточки объявления.
@@ -93,30 +119,4 @@
       }
     }
   };
-
-  // Хэндлеры карточек
-  function modalCloseHandler() {
-    var closeButton = document.querySelector('.popup__close');
-    if (closeButton) {
-      closeButton.addEventListener('click', closeButtonClickHandler);
-      document.addEventListener('keydown', documentKeydownHandler);
-    }
-  }
-
-  function closeButtonClickHandler(evt) {
-    var closeButton = document.querySelector('.popup__close');
-    if (evt.button === 0) {
-      var mapCard = document.querySelector('.map__card');
-      mapCard.style.display = 'none';
-      closeButton.removeEventListener('click', closeButtonClickHandler);
-    }
-  }
-
-  function documentKeydownHandler(evt) {
-    if (evt.key === 'Escape') {
-      var mapCard = document.querySelector('.map__card');
-      mapCard.style.display = 'none';
-      document.removeEventListener('keydown', documentKeydownHandler);
-    }
-  }
 })();
