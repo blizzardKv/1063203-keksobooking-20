@@ -1,18 +1,30 @@
 'use strict';
 (function () {
-  var OFFERS_NUMBER = 8;
   var MAX_RENT_PRICE = 1000000;
   var MIN_TEXT_LENGTH = 30;
   var MAX_TEXT_LENGTH = 100;
 
+  // Задаем дефолтное состояние для карты и сразу же вызываем функцию
+  function setMapDefaultState() {
+    window.domComponents.textInput.setAttribute('required', 'required');
+    window.domComponents.rentPrice.setAttribute('required', 'required');
+    window.utils.setCustomAttributeOnCollection(window.domComponents.mapFiltersSelects, 'disabled', 'disabled');
+    window.utils.setCustomAttributeOnCollection(window.domComponents.mapFiltersInputs, 'disabled', 'disabled');
+    window.domComponents.mapFilters.setAttribute('disabled', 'disabled');
+    window.domComponents.formTextarea.setAttribute('disabled', 'disabled');
+    window.domComponents.formSubmit.setAttribute('disabled', 'disabled');
+    // Чтобы не мозолило глаза, а то дефолтный плейсхолдер не соответствует дефолтному значению
+    window.domComponents.rentPrice.setAttribute('placeholder', '1000');
+  }
+
+  setMapDefaultState();
+
   // Коллбэк, убирает класс с карты, рендерим пины, убираем атрибуты disabled, снимаем слушателя с mainPin
   function initMapActiveState() {
-    var pinsData = window.data.createMocksForData(OFFERS_NUMBER);
+    window.parseResponse.load(cardInitClickHandler);
+    window.parseResponse.load(cardInitKeydownHandler);
 
-    cardInitClickHandler(pinsData);
-    cardInitKeydownHandler(pinsData);
-
-    window.pin.generatePins(pinsData);
+    window.parseResponse.load(window.pin.generatePins);
     window.card.generateCard(window.card.createCardExample());
 
     window.domComponents.addressInput.setAttribute('readonly', 'readonly');
@@ -31,21 +43,6 @@
     window.domComponents.mainPin.removeEventListener('mousedown', mainPinMousedownHandler);
     window.domComponents.mainPin.removeEventListener('keydown', mainPinKeydownHandler);
   }
-
-  // Задаем дефолтное состояние для карты и сразу же вызываем функцию
-  function setMapDefaultState() {
-    window.domComponents.textInput.setAttribute('required', 'required');
-    window.domComponents.rentPrice.setAttribute('required', 'required');
-    window.utils.setCustomAttributeOnCollection(window.domComponents.mapFiltersSelects, 'disabled', 'disabled');
-    window.utils.setCustomAttributeOnCollection(window.domComponents.mapFiltersInputs, 'disabled', 'disabled');
-    window.domComponents.mapFilters.setAttribute('disabled', 'disabled');
-    window.domComponents.formTextarea.setAttribute('disabled', 'disabled');
-    window.domComponents.formSubmit.setAttribute('disabled', 'disabled');
-    // Чтобы не мозолило глаза, а то дефолтный плейсхолдер не соответствует дефолтному значению
-    window.domComponents.rentPrice.setAttribute('placeholder', '1000');
-  }
-
-  setMapDefaultState();
 
   window.pin.moveMainPin();
 
@@ -79,8 +76,8 @@
     }
   }
 
-  function mainPinKeydownHandler(e) {
-    if (e.key === 'Enter') {
+  function mainPinKeydownHandler(evt) {
+    if (evt.key === 'Enter') {
       initMapActiveState();
     }
   }
