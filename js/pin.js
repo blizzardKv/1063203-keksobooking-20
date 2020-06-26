@@ -6,13 +6,13 @@
   var ALT_IMAGE_TEXT = 'Аватарка пользователя';
 
   // Задаем координаты для поля адреса. Берем с помощью getBoundingRect значения по x,y, height и width пина.
-  // Добавляем значения острия, высотпу получаем из getComputedStyle
+  // Добавляем значения острия, высоту получаем из getComputedStyle
   window.pin = {
     setPinCoordinates: function () {
       var pinCoordinates = mainPin.getBoundingClientRect();
       var pinEdge = window.getComputedStyle(mainPin, ':after');
       var pinEdgeHeight = parseInt(pinEdge.height, 10);
-      return 'x: ' + Math.floor(pinCoordinates.x + pinCoordinates.width / 2) + '; y: ' + Math.floor(pinCoordinates.y + pinCoordinates.height + pinEdgeHeight);
+      return Math.floor(pinCoordinates.x + pinCoordinates.width / 2) + ', ' + Math.floor(pinCoordinates.y + pinCoordinates.height + pinEdgeHeight);
     },
 
     // Добавляем функцию по настройке пинов. Клонируем имеющийся темплейт, выбираем в новом темплейте аватар по селектору.
@@ -80,7 +80,7 @@
 
           // Тут будет отрабатывать при каждом сдвиге относительно координат, если перенести
           // в onMouseUp - то только по отпусканию кнопки мыши.
-          window.domComponents.addressInput.value = (mainPin.style.left + '; ' + mainPin.style.top);
+          window.domComponents.addressInput.value = (parseInt(mainPin.style.left, 10) + '; ' + parseInt(mainPin.style.top, 10));
         };
 
         // На поднятии клавиши мышки - снимаем слушаетелей.
