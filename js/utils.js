@@ -106,16 +106,14 @@
     },
 
     setCustomAttributeOnCollection: function (elements, attribute, property) {
-      elements.forEach(function (elem) {
-        elem.setAttribute(attribute, property);
+      elements.forEach(function (el) {
+        el.setAttribute(attribute, property);
       });
     },
 
     // Добавляем n-фотографий в объявление.
     // Если много - то создаем для каждой отдельную "ячейку"
     addExtraPhotos: function (template, photos) {
-      // console.log(template);
-      // debugger;
       var photosTemplate = template.querySelector('.popup__photo');
       var clonedTemplate = photosTemplate.cloneNode();
       if (photos.length !== 0) {

@@ -7,28 +7,28 @@
   };
   var SERVER_PASS_STATUS = 200;
   var TIMEOUT = 10000;
-  var errorMessage = 'Произошла ошибка соединения';
-  var responseMessage = 'Статус ответа: ';
-  var responseFailMessage = 'Запрос не успел выполниться за ';
+  var ERROR_MESSAGE = 'Произошла ошибка соединения';
+  var RESPONSE_MESSAGE = 'Статус ответа: ';
+  var RESPONSE_FAIL_MESSAGE = 'Запрос не успел выполниться за ';
 
-  function initiateXHR(onSuccess, onError) {
+  function initiateXHR(successHandler, errorHandler) {
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
 
     xhr.addEventListener('load', function () {
       if (xhr.status === SERVER_PASS_STATUS) {
-        onSuccess(xhr.response);
+        successHandler(xhr.response);
       } else {
-        onError(responseMessage + xhr.status + ' ' + xhr.statusText);
+        errorHandler(RESPONSE_MESSAGE + xhr.status + ' ' + xhr.statusText);
       }
     });
 
     xhr.addEventListener('error', function () {
-      onError(errorMessage);
+      errorHandler(ERROR_MESSAGE);
     });
 
     xhr.addEventListener('timeout', function () {
-      onError(responseFailMessage + xhr.timeout + 'мс');
+      errorHandler(RESPONSE_FAIL_MESSAGE + xhr.timeout + 'мс');
     });
 
     xhr.timeout = TIMEOUT;
@@ -40,14 +40,14 @@
     urlLoad: URL.LOAD,
     urlSave: URL.SAVE,
 
-    load: function (url, onSuccess, onError) {
-      var xhr = initiateXHR(onSuccess, onError);
+    load: function (url, successHandler, errorHandler) {
+      var xhr = initiateXHR(successHandler, errorHandler);
       xhr.open('GET', window.parseResponse.urlLoad);
       xhr.send();
     },
 
-    save: function (data, onSuccess, onError) {
-      var xhr = initiateXHR(onSuccess, onError);
+    save: function (data, successHandler, errorHandler) {
+      var xhr = initiateXHR(successHandler, errorHandler);
       xhr.open('POST', window.parseResponse.urlLoad);
       xhr.send(data);
     }
