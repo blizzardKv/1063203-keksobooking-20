@@ -69,8 +69,6 @@
     });
   }
 
-  window.domComponents.submitButton.addEventListener('click', validatorsHandler);
-
   // Добавляем слушателя для инициализации карты, проверяем клик левой кнопкой
 
   function mainPinMousedownHandler(evt) {
@@ -85,19 +83,20 @@
     }
   }
 
-  // Валидация
+  // Валидация и отправка формы
   function submitButtonClickHandler(evt) {
-    evt.preventDefault();
-    window.validators.compareNumberOfRoomsWithNumberOfGuests();
-    window.validators.checkMaxRentPrice(MAX_RENT_PRICE);
-    window.validators.checkFieldTextLength(window.domComponents.textInput, MIN_TEXT_LENGTH, MAX_TEXT_LENGTH);
-    window.parseResponse.save(new FormData(window.domComponents.form), function () {
-      if (window.domComponents.validationMark === true) {
-        window.successUpload.handler();
-      }
-    }, function () {
-      window.failedUpload.handler();
-    });
+    validatorsHandler();
+    if (window.domComponents.globalValidationMark === true) {
+      evt.preventDefault();
+      window.parseResponse.save(new FormData(window.domComponents.form), function () {
+        if (window.domComponents.validationMark === true) {
+          window.successUpload.handler();
+          window.domComponents.form.reset();
+        }
+      }, function () {
+        window.failedUpload.handler();
+      });
+    }
   }
 
   window.domComponents.mainPin.addEventListener('mousedown', mainPinMousedownHandler);
@@ -119,7 +118,13 @@
   function validatorsHandler() {
     window.validators.compareNumberOfRoomsWithNumberOfGuests();
     window.validators.checkMaxRentPrice(MAX_RENT_PRICE);
+    window.validators.setPropriateValue();
     window.validators.checkFieldTextLength(window.domComponents.textInput, MIN_TEXT_LENGTH, MAX_TEXT_LENGTH);
+    if (window.domComponents.validationMark === true &&
+      window.domComponents.validationMarkTextLength === true &&
+      window.domComponents.validationMarkMaxPrice === true) {
+      window.domComponents.globalValidationMark = true;
+    }
   }
 
   function formChangeHandler() {
@@ -128,13 +133,6 @@
 
   // Добавляем слушателя на форму для проверки соответствия в валидации
   window.domComponents.form.addEventListener('change', formChangeHandler);
-
-  // Добавляем слушателя на сабмит, если валидация успешна.
-  window.domComponents.form.addEventListener('submit', function () {
-    if (window.domComponents.validationMark === true) {
-      window.domComponents.form.submit();
-    }
-  });
 
   window.domComponents.submitButton.addEventListener('click', submitButtonClickHandler);
 

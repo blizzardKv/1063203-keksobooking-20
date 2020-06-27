@@ -48,7 +48,7 @@
 
     save: function (data, successHandler, errorHandler) {
       var xhr = initiateXHR(successHandler, errorHandler);
-      xhr.open('POST', window.parseResponse.urlLoad);
+      xhr.open('POST', window.parseResponse.urlSave);
       xhr.send(data);
     }
   };

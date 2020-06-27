@@ -23,6 +23,9 @@
   var submitButton = form.querySelector('.ad-form__submit');
   var textInput = document.querySelector('#title');
   var validationMark = '';
+  var validationMarkMaxPrice = '';
+  var validationMarkTextLength = '';
+  var globalValidationMark = '';
 
   window.domComponents = {
     addressInput: addressInput,
@@ -45,6 +48,9 @@
     roomNumberValue: roomNumberValue,
     submitButton: submitButton,
     textInput: textInput,
-    validationMark: validationMark
+    validationMark: validationMark,
+    validationMarkMaxPrice: validationMarkMaxPrice,
+    validationMarkTextLength: validationMarkTextLength,
+    globalValidationMark: globalValidationMark
   };
 })();
