@@ -49,6 +49,8 @@
     checkIsDataExists: function (data, el) {
       if (data.length === 0 || data.length === 'undefined') {
         el.style.display = 'none';
+      } else {
+        el.style.display = 'block';
       }
 
       return data;
@@ -104,9 +106,29 @@
     },
 
     setCustomAttributeOnCollection: function (elements, attribute, property) {
-      elements.forEach(function (elem) {
-        elem.setAttribute(attribute, property);
+      elements.forEach(function (el) {
+        el.setAttribute(attribute, property);
       });
+    },
+
+    // Добавляем n-фотографий в объявление.
+    // Если много - то создаем для каждой отдельную "ячейку"
+    addExtraPhotos: function (template, photos) {
+      var photosTemplate = template.querySelector('.popup__photo');
+      var clonedTemplate = photosTemplate.cloneNode();
+      if (photos.length !== 0) {
+        template.innerHTML = '';
+        template.style.removeProperty('display');
+      } else {
+        template.style.display = 'none';
+      }
+      var fragment = document.createDocumentFragment();
+      for (var i = 0; i < photos.length; i++) {
+        var item = clonedTemplate.cloneNode();
+        item.src = photos[i];
+        fragment.appendChild(item);
+      }
+      return fragment;
     }
   };
 })();

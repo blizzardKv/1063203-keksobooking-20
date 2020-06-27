@@ -20,6 +20,32 @@
     return elem.appendChild(fragment);
   }
 
+  // Хэндлеры карточек
+  function modalCloseHandler() {
+    var closeButton = document.querySelector('.popup__close');
+    if (closeButton) {
+      closeButton.addEventListener('click', closeButtonClickHandler);
+      document.addEventListener('keydown', documentKeydownHandler);
+    }
+  }
+
+  function closeButtonClickHandler(evt) {
+    var closeButton = document.querySelector('.popup__close');
+    if (evt.button === 0) {
+      var mapCard = document.querySelector('.map__card');
+      mapCard.style.display = 'none';
+      closeButton.removeEventListener('click', closeButtonClickHandler);
+    }
+  }
+
+  function documentKeydownHandler(evt) {
+    if (evt.key === 'Escape') {
+      var mapCard = document.querySelector('.map__card');
+      mapCard.style.display = 'none';
+      document.removeEventListener('keydown', documentKeydownHandler);
+    }
+  }
+
   window.card = {
     // Запускаем цепочку функций по генерации пинов.
     // Функция по генерации информации для карточки объявления.
@@ -32,6 +58,7 @@
 
     fillCardWithInformation: function (cardInfo) {
       var cardTemplate = document.querySelector('.map__card');
+      var photosWrapper = cardTemplate.querySelector('.popup__photos');
 
       // Сделаем объект с шаблонами для конкатенации строк.
       var wordsTemplate = {
@@ -67,7 +94,7 @@
         wordsTemplate.comma + wordsTemplate.checkOut + cardInfo.offer.checkout, offerGuestsTime);
       offerDescription.textContent = window.utils.checkIsDataExists(cardInfo.offer.description, offerDescription);
       window.utils.checkIsDataExists(createFeatureWithIcon(offerFeatures, cardInfo.offer.features), offerFeatures);
-      offerPhoto.src = window.utils.checkIsDataExists(cardInfo.offer.photos, offerPhoto);
+      photosWrapper.appendChild(window.utils.addExtraPhotos(photosWrapper, cardInfo.offer.photos, offerPhoto));
       offerAvatar.src = window.utils.checkIsDataExists(cardInfo.author.avatar, offerAvatar);
 
       cardTemplate.style.display = 'block';
@@ -92,30 +119,4 @@
       }
     }
   };
-
-  // Хэндлеры карточек
-  function modalCloseHandler() {
-    var closeButton = document.querySelector('.popup__close');
-    if (closeButton) {
-      closeButton.addEventListener('click', closeButtonClickHandler);
-      document.addEventListener('keydown', documentKeydownHandler);
-    }
-  }
-
-  function closeButtonClickHandler(evt) {
-    if (evt.button === 0) {
-      var mapCard = document.querySelector('.map__card');
-      mapCard.style.display = 'none';
-      document.removeEventListener('click', closeButtonClickHandler);
-    }
-  }
-
-  function documentKeydownHandler(e) {
-    if (e.key === 'Escape') {
-      var closeButton = document.querySelector('.popup__close');
-      var mapCard = document.querySelector('.map__card');
-      mapCard.style.display = 'none';
-      closeButton.removeEventListener('click', documentKeydownHandler);
-    }
-  }
 })();
