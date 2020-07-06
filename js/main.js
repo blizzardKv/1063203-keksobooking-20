@@ -8,6 +8,12 @@
   function setMapDefaultState() {
     window.domComponents.textInput.setAttribute('required', 'required');
     window.domComponents.rentPrice.setAttribute('required', 'required');
+    window.domComponents.addressInput.setAttribute('readonly', 'readonly');
+    window.domComponents.addressInput.setAttribute('placeholder', '570, 375');
+    window.domComponents.textInput.setAttribute('disabled', 'disabled');
+    window.domComponents.avatarInput.setAttribute('disabled', 'disabled');
+    window.domComponents.rentPrice.setAttribute('disabled', 'disabled');
+    window.domComponents.rentImages.setAttribute('disabled', 'disabled');
     window.utils.setCustomAttributeOnCollection(window.domComponents.mapFiltersSelects, 'disabled', 'disabled');
     window.utils.setCustomAttributeOnCollection(window.domComponents.mapFiltersInputs, 'disabled', 'disabled');
     window.domComponents.mapFilters.setAttribute('disabled', 'disabled');
@@ -15,15 +21,36 @@
     window.domComponents.formSubmit.setAttribute('disabled', 'disabled');
     // Чтобы не мозолило глаза, а то дефолтный плейсхолдер не соответствует дефолтному значению
     window.domComponents.rentPrice.setAttribute('placeholder', '1000');
+
+    if (!window.domComponents.map.classList.contains('map--faded')) {
+      window.domComponents.map.classList.add('map--faded');
+    }
+
+    var activePins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+    if (activePins) {
+      activePins.forEach(function (element) {
+        element.remove();
+      });
+    }
+    window.domComponents.form.classList.add('ad-form--disabled');
+
+    // Для второго и последующего запуска. Т.к. по дефолту висит слушатель, насильно убираем его и перевызываем.
+    window.domComponents.mainPin.removeEventListener('click', initMapActiveState);
+    window.domComponents.mainPin.removeEventListener('keydown', initMapActiveState);
+    window.domComponents.mainPin.addEventListener('keydown', initMapActiveState);
+    window.domComponents.mainPin.addEventListener('click', initMapActiveState);
+    window.domComponents.resetButton.removeEventListener('click', setMapDefaultState);
+    window.domComponents.resetButton.removeEventListener('keydown', setMapDefaultState);
+
+    window.domComponents.mainPin.style.left = '570px';
+    window.domComponents.mainPin.style.top = '375px';
   }
 
   setMapDefaultState();
 
   // Коллбэк, убирает класс с карты, рендерим пины, убираем атрибуты disabled, снимаем слушателя с mainPin
   function initMapActiveState() {
-    window.parseResponse.load(window.parseResponse.urlLoad, cardInitClickHandler);
-    window.parseResponse.load(window.parseResponse.urlLoad, cardInitKeydownHandler);
-
+    window.domComponents.form.removeAttribute('readonly');
     window.parseResponse.load(window.parseResponse.urlLoad, window.pin.generatePins);
     window.card.generateCard(window.card.createCardExample());
 
@@ -42,29 +69,43 @@
     window.domComponents.mapFilters.removeAttribute('disabled');
     window.domComponents.formTextarea.removeAttribute('disabled');
     window.domComponents.formSubmit.removeAttribute('disabled');
+    window.domComponents.textInput.removeAttribute('disabled');
+    window.domComponents.avatarInput.removeAttribute('disabled');
+    window.domComponents.rentPrice.removeAttribute('disabled');
+    window.domComponents.rentImages.removeAttribute('disabled');
 
     window.domComponents.mainPin.removeEventListener('mousedown', mainPinMousedownHandler);
     window.domComponents.mainPin.removeEventListener('keydown', mainPinKeydownHandler);
+    window.domComponents.mainPin.removeEventListener('keydown', initMapActiveState);
+    window.domComponents.mainPin.removeEventListener('click', initMapActiveState);
+
+    window.domComponents.resetButton.addEventListener('click', setMapDefaultState);
+    window.domComponents.resetButton.addEventListener('keydown', setMapDefaultState);
+
+    window.domComponents.mapPinsArea.addEventListener('click', cardInitClickHandler);
+    window.domComponents.mapPinsArea.addEventListener('keydown', cardInitKeydownHandler);
   }
 
   window.pin.moveMainPin();
 
-  // Слушатели родительского модуля
   window.domComponents.mainPin.addEventListener('mousedown', mainPinMousedownHandler);
   window.domComponents.mainPin.addEventListener('keydown', mainPinKeydownHandler);
 
   // Вызываем нужную карточку товаров. Делегируем событие, проверяем пин ли это -
-  function cardInitClickHandler(cardInfo) {
+  function cardInitClickHandler() {
     window.domComponents.mapPinsArea.addEventListener('click', function (evt) {
-      window.card.createAppropriateCard(evt, cardInfo);
+      window.card.createAppropriateCard(evt, window.domComponents.adverts);
+      if (evt.target.closest('.map__pin')) {
+        evt.target.closest('.map__pin').classList.add('map__pin--active');
+      }
     });
   }
 
   // Не работает, вероятно из-за closest. Рендер карточки по нажатию Enter на pin.
-  function cardInitKeydownHandler(cardInfo) {
+  function cardInitKeydownHandler() {
     document.addEventListener('keydown', function (evt) {
       if (evt.key === 'Enter') {
-        window.card.createAppropriateCard(evt, cardInfo);
+        window.card.createAppropriateCard(evt, window.domComponents.adverts);
       }
     });
   }
@@ -92,6 +133,7 @@
         if (window.domComponents.validationMark === true) {
           window.successUpload.handler();
           window.domComponents.form.reset();
+          setMapDefaultState();
         }
       }, function () {
         window.failedUpload.handler();

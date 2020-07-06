@@ -48,7 +48,9 @@
       if (textField.value.length > minLength && textField.value.length < maxLength) {
         textField.setCustomValidity('');
         window.domComponents.validationMarkTextLength = true;
+        window.utils.checkIfNodeHasClass(window.domComponents.textInput, 'validation-error');
       } else {
+        window.domComponents.textInput.classList.add('validation-error');
         textField.setCustomValidity('Минимальная длина поля - 30 символов, максимальная - 100 символов');
         window.domComponents.validationMarkTextLength = false;
       }
@@ -57,9 +59,11 @@
     // Проверка максимальной стоимости аренды
     checkMaxRentPrice: function (maxPrice) {
       if (window.domComponents.rentPrice.value > maxPrice) {
+        window.domComponents.rentPrice.classList.add('validation-error');
         window.domComponents.validationMarkMaxPrice = false;
         window.domComponents.rentPrice.setCustomValidity('Максимальная стоимость аренды - 1000000');
       } else {
+        window.utils.checkIfNodeHasClass(window.domComponents.rentPrice, 'validation-error');
         window.domComponents.validationMarkMaxPrice = true;
       }
     },

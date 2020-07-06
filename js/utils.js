@@ -129,6 +129,12 @@
         fragment.appendChild(item);
       }
       return fragment;
+    },
+
+    checkIfNodeHasClass: function (node, className) {
+      if (node.classList.contains(className)) {
+        node.classList.remove(className);
+      }
     }
   };
 })();

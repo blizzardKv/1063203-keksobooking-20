@@ -7,10 +7,6 @@
     .querySelector('div');
 
   window.successUpload = {
-    resetPage: function () {
-      window.domComponents.form.classList.add('ad-form--disabled');
-    },
-
     handler: function () {
       var success = template.cloneNode(true);
 

@@ -34,6 +34,12 @@
     if (evt.button === 0) {
       var mapCard = document.querySelector('.map__card');
       mapCard.style.display = 'none';
+      var activePins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+      activePins.forEach(function (pin) {
+        if (pin.classList.contains('map__pin--active')) {
+          pin.classList.remove('map__pin--active');
+        }
+      });
       closeButton.removeEventListener('click', closeButtonClickHandler);
     }
   }
@@ -42,6 +48,12 @@
     if (evt.key === 'Escape') {
       var mapCard = document.querySelector('.map__card');
       mapCard.style.display = 'none';
+      var activePins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+      activePins.forEach(function (pin) {
+        if (pin.classList.contains('map__pin--active')) {
+          pin.classList.remove('map__pin--active');
+        }
+      });
       document.removeEventListener('keydown', documentKeydownHandler);
     }
   }

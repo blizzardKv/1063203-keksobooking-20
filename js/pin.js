@@ -34,6 +34,7 @@
     // с данными из функции setPinOptions, которая обращается к createMocksForData, добавляем их в пустой documentFragment. Вставляем получившийся documentFragment
     // в map__pins.
     generatePins: function (pinsList) {
+      window.domComponents.adverts = pinsList;
       var fragment = document.createDocumentFragment();
 
       for (var i = 0; i < pinsList.length; i++) {
@@ -80,7 +81,7 @@
 
           // Тут будет отрабатывать при каждом сдвиге относительно координат, если перенести
           // в onMouseUp - то только по отпусканию кнопки мыши.
-          window.domComponents.addressInput.value = (parseInt(mainPin.style.left, 10) + '; ' + parseInt(mainPin.style.top, 10));
+          window.domComponents.addressInput.value = (parseInt(mainPin.style.left, 10) + ', ' + parseInt(mainPin.style.top, 10));
         };
 
         // На поднятии клавиши мышки - снимаем слушаетелей.
