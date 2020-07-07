@@ -32,28 +32,14 @@
   function closeButtonClickHandler(evt) {
     var closeButton = document.querySelector('.popup__close');
     if (evt.button === 0) {
-      var mapCard = document.querySelector('.map__card');
-      mapCard.style.display = 'none';
-      var activePins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-      activePins.forEach(function (pin) {
-        if (pin.classList.contains('map__pin--active')) {
-          pin.classList.remove('map__pin--active');
-        }
-      });
+      window.utils.mapPinsHandler();
       closeButton.removeEventListener('click', closeButtonClickHandler);
     }
   }
 
   function documentKeydownHandler(evt) {
     if (evt.key === 'Escape') {
-      var mapCard = document.querySelector('.map__card');
-      mapCard.style.display = 'none';
-      var activePins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-      activePins.forEach(function (pin) {
-        if (pin.classList.contains('map__pin--active')) {
-          pin.classList.remove('map__pin--active');
-        }
-      });
+      window.utils.mapPinsHandler();
       document.removeEventListener('keydown', documentKeydownHandler);
     }
   }

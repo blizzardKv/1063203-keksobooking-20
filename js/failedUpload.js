@@ -18,11 +18,14 @@
       });
 
       if (error) {
-        document.addEventListener('keydown', function (evt) {
-          if (evt.key === 'Escape') {
-            error.remove();
-          }
-        });
+        document.addEventListener('keydown', errorKeydownHandler);
+      }
+
+      function errorKeydownHandler(evt) {
+        if (evt.key === 'Escape') {
+          error.remove();
+          document.removeEventListener('keydown', errorKeydownHandler);
+        }
       }
 
       document.body.appendChild(error);
