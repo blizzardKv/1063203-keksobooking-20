@@ -25,6 +25,8 @@
   var submitButton = form.querySelector('.ad-form__submit');
   var textInput = document.querySelector('#title');
   var resetButton = form.querySelector('.ad-form__reset');
+  var filters = document.querySelector('.map__filters');
+  var housingTypeFilter = filters.querySelector('[name=housing-type]');
   var adverts = '';
   var validationMark = '';
   var validationMarkMaxPrice = '';
@@ -56,6 +58,8 @@
     textInput: textInput,
     validationMark: validationMark,
     resetButton: resetButton,
+    filters: filters,
+    housingTypeFilter: housingTypeFilter,
     adverts: adverts,
     validationMarkMaxPrice: validationMarkMaxPrice,
     validationMarkTextLength: validationMarkTextLength,

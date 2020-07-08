@@ -85,6 +85,9 @@
 
     window.domComponents.mapPinsArea.addEventListener('click', cardInitClickHandler);
     window.domComponents.mapPinsArea.addEventListener('keydown', cardInitKeydownHandler);
+    var filters = document.querySelector('.map__filters');
+    var housingTypeFilter = filters.querySelector('[name=housing-type]');
+    housingTypeFilter.addEventListener('change', window.filters.filterAdverts);
   }
 
   window.pin.moveMainPin();

@@ -43,7 +43,16 @@
       for (var i = 0; i < NUMBER_OF_PINS_TO_GENERATE; i++) {
         fragment.appendChild(window.pin.setPinOptions(randomArray[i]));
       }
-      window.filters.filterAdverts();
+      window.domComponents.mapPinsArea.appendChild(fragment);
+    },
+
+    rerenderPins: function (pinsData) {
+      var randomArray = window.utils.shuffleArray(pinsData);
+      randomArray = randomArray.slice(0, NUMBER_OF_PINS_TO_GENERATE);
+      var fragment = document.createDocumentFragment();
+      for (var i = 0; i < randomArray.length; i++) {
+        fragment.appendChild(window.pin.setPinOptions(randomArray[i]));
+      }
       window.domComponents.mapPinsArea.appendChild(fragment);
     },
 
