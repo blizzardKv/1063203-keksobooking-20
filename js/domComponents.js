@@ -19,10 +19,17 @@
   var mapFiltersSelects = mapFilters.querySelectorAll('select');
   var mapPinsArea = document.querySelector('.map__pins');
   var rentPrice = form.querySelector('#price');
+  var rentImages = form.querySelector('#images');
+  var avatarInput = form.querySelector('#avatar');
   var roomNumberValue = form.querySelector('#room_number');
   var submitButton = form.querySelector('.ad-form__submit');
   var textInput = document.querySelector('#title');
+  var resetButton = form.querySelector('.ad-form__reset');
+  var adverts = '';
   var validationMark = '';
+  var validationMarkMaxPrice = '';
+  var validationMarkTextLength = '';
+  var globalValidationMark = '';
 
   window.domComponents = {
     addressInput: addressInput,
@@ -42,9 +49,16 @@
     mapFiltersSelects: mapFiltersSelects,
     mapPinsArea: mapPinsArea,
     rentPrice: rentPrice,
+    rentImages: rentImages,
+    avatarInput: avatarInput,
     roomNumberValue: roomNumberValue,
     submitButton: submitButton,
     textInput: textInput,
-    validationMark: validationMark
+    validationMark: validationMark,
+    resetButton: resetButton,
+    adverts: adverts,
+    validationMarkMaxPrice: validationMarkMaxPrice,
+    validationMarkTextLength: validationMarkTextLength,
+    globalValidationMark: globalValidationMark
   };
 })();

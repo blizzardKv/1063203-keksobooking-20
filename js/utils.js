@@ -129,6 +129,23 @@
         fragment.appendChild(item);
       }
       return fragment;
+    },
+
+    checkIfNodeHasClass: function (node, className) {
+      if (node.classList.contains(className)) {
+        node.classList.remove(className);
+      }
+    },
+
+    mapPinsHandler: function () {
+      var mapCard = document.querySelector('.map__card');
+      mapCard.style.display = 'none';
+      var activePins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+      activePins.forEach(function (pin) {
+        if (pin.classList.contains('map__pin--active')) {
+          pin.classList.remove('map__pin--active');
+        }
+      });
     }
   };
 })();

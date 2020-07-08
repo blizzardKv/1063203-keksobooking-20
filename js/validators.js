@@ -7,14 +7,18 @@
       if (window.domComponents.roomNumberValue.value === '1' && window.domComponents.guestsNumber.value === '1') {
         window.domComponents.validationMark = true;
         window.domComponents.roomNumberValue.setCustomValidity('');
+        return;
       } else {
+        window.domComponents.validationMark = false;
         window.domComponents.roomNumberValue.setCustomValidity('Извините, данные апартаменты предназначены для одного гостя, выберите другой вариант');
       }
       if (window.domComponents.roomNumberValue.value === '2') {
         if (window.domComponents.guestsNumber.value === '1' || window.domComponents.guestsNumber.value === '2') {
           window.domComponents.validationMark = true;
           window.domComponents.roomNumberValue.setCustomValidity('');
+          return;
         } else {
+          window.domComponents.validationMark = false;
           window.domComponents.roomNumberValue.setCustomValidity('Извините, данные апартаменты предназначены для одного или двух гостей, выберите другой вариант');
         }
       }
@@ -22,6 +26,7 @@
         if (window.domComponents.guestsNumber.value === '1' || window.domComponents.guestsNumber.value === '2' || window.domComponents.guestsNumber.value === '3') {
           window.domComponents.validationMark = true;
           window.domComponents.roomNumberValue.setCustomValidity('');
+          return;
         } else {
           window.domComponents.validationMark = false;
           window.domComponents.roomNumberValue.setCustomValidity('Извините, данные апартаменты предназначены только для гостей, выберите другой вариант');
@@ -32,6 +37,7 @@
           window.domComponents.validationMark = true;
           window.domComponents.roomNumberValue.setCustomValidity('');
         } else {
+          window.domComponents.validationMark = false;
           window.domComponents.roomNumberValue.setCustomValidity('Извините, данные апартаменты не предназначены для гостей, выберите другой вариант');
         }
       }
@@ -41,19 +47,24 @@
     checkFieldTextLength: function (textField, minLength, maxLength) {
       if (textField.value.length > minLength && textField.value.length < maxLength) {
         textField.setCustomValidity('');
+        window.domComponents.validationMarkTextLength = true;
+        window.utils.checkIfNodeHasClass(window.domComponents.textInput, 'validation-error');
       } else {
+        window.domComponents.textInput.classList.add('validation-error');
         textField.setCustomValidity('Минимальная длина поля - 30 символов, максимальная - 100 символов');
-        window.domComponents.validationMark = true;
+        window.domComponents.validationMarkTextLength = false;
       }
     },
 
     // Проверка максимальной стоимости аренды
     checkMaxRentPrice: function (maxPrice) {
       if (window.domComponents.rentPrice.value > maxPrice) {
-        window.domComponents.validationMark = false;
+        window.domComponents.rentPrice.classList.add('validation-error');
+        window.domComponents.validationMarkMaxPrice = false;
         window.domComponents.rentPrice.setCustomValidity('Максимальная стоимость аренды - 1000000');
       } else {
-        window.domComponents.validationMark = true;
+        window.utils.checkIfNodeHasClass(window.domComponents.rentPrice, 'validation-error');
+        window.domComponents.validationMarkMaxPrice = true;
       }
     },
 
