@@ -32,6 +32,7 @@
         element.remove();
       });
     }
+    window.utils.removeElements(activePins);
     window.domComponents.form.classList.add('ad-form--disabled');
 
     // Для второго и последующего запуска. Т.к. по дефолту висит слушатель, насильно убираем его и перевызываем.

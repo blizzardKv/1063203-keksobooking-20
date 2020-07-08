@@ -4,6 +4,7 @@
   var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
   var mainPin = document.querySelector('.map__pin--main');
   var ALT_IMAGE_TEXT = 'Аватарка пользователя';
+  var NUMBER_OF_PINS_TO_GENERATE = 5;
 
   // Задаем координаты для поля адреса. Берем с помощью getBoundingRect значения по x,y, height и width пина.
   // Добавляем значения острия, высоту получаем из getComputedStyle
@@ -35,11 +36,14 @@
     // в map__pins.
     generatePins: function (pinsList) {
       window.domComponents.adverts = pinsList;
+      // Не зря же писали
+      var randomArray = window.utils.shuffleArray(window.domComponents.adverts);
       var fragment = document.createDocumentFragment();
 
-      for (var i = 0; i < pinsList.length; i++) {
-        fragment.appendChild(window.pin.setPinOptions(pinsList[i]));
+      for (var i = 0; i < NUMBER_OF_PINS_TO_GENERATE; i++) {
+        fragment.appendChild(window.pin.setPinOptions(randomArray[i]));
       }
+      window.filters.filterAdverts();
       window.domComponents.mapPinsArea.appendChild(fragment);
     },
 
