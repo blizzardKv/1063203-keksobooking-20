@@ -8,6 +8,12 @@
   function setMapDefaultState() {
     window.domComponents.textInput.setAttribute('required', 'required');
     window.domComponents.rentPrice.setAttribute('required', 'required');
+    window.domComponents.addressInput.setAttribute('readonly', 'readonly');
+    window.domComponents.addressInput.setAttribute('placeholder', '570, 375');
+    window.domComponents.textInput.setAttribute('disabled', 'disabled');
+    window.domComponents.avatarInput.setAttribute('disabled', 'disabled');
+    window.domComponents.rentPrice.setAttribute('disabled', 'disabled');
+    window.domComponents.rentImages.setAttribute('disabled', 'disabled');
     window.utils.setCustomAttributeOnCollection(window.domComponents.mapFiltersSelects, 'disabled', 'disabled');
     window.utils.setCustomAttributeOnCollection(window.domComponents.mapFiltersInputs, 'disabled', 'disabled');
     window.domComponents.mapFilters.setAttribute('disabled', 'disabled');
@@ -15,16 +21,37 @@
     window.domComponents.formSubmit.setAttribute('disabled', 'disabled');
     // Чтобы не мозолило глаза, а то дефолтный плейсхолдер не соответствует дефолтному значению
     window.domComponents.rentPrice.setAttribute('placeholder', '1000');
+
+    if (!window.domComponents.map.classList.contains('map--faded')) {
+      window.domComponents.map.classList.add('map--faded');
+    }
+
+    var activePins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+    if (activePins) {
+      activePins.forEach(function (element) {
+        element.remove();
+      });
+    }
+    window.domComponents.form.classList.add('ad-form--disabled');
+
+    // Для второго и последующего запуска. Т.к. по дефолту висит слушатель, насильно убираем его и перевызываем.
+    window.domComponents.mainPin.removeEventListener('click', initMapActiveState);
+    window.domComponents.mainPin.removeEventListener('keydown', initMapActiveState);
+    window.domComponents.mainPin.addEventListener('keydown', initMapActiveState);
+    window.domComponents.mainPin.addEventListener('click', initMapActiveState);
+    window.domComponents.resetButton.removeEventListener('click', setMapDefaultState);
+    window.domComponents.resetButton.removeEventListener('keydown', setMapDefaultState);
+
+    window.domComponents.mainPin.style.left = '570px';
+    window.domComponents.mainPin.style.top = '375px';
   }
 
   setMapDefaultState();
 
   // Коллбэк, убирает класс с карты, рендерим пины, убираем атрибуты disabled, снимаем слушателя с mainPin
   function initMapActiveState() {
-    window.parseResponse.load(cardInitClickHandler);
-    window.parseResponse.load(cardInitKeydownHandler);
-
-    window.parseResponse.load(window.pin.generatePins);
+    window.domComponents.form.removeAttribute('readonly');
+    window.parseResponse.load(window.parseResponse.urlLoad, window.pin.generatePins);
     window.card.generateCard(window.card.createCardExample());
 
     window.domComponents.addressInput.setAttribute('readonly', 'readonly');
@@ -36,37 +63,52 @@
     window.utils.controlsRemoveAttribute(window.domComponents.formInputElements);
     window.utils.controlsRemoveAttribute(window.domComponents.formSelectElements);
 
+    window.utils.controlsRemoveAttribute(window.domComponents.mapFiltersInputs);
+    window.utils.controlsRemoveAttribute(window.domComponents.mapFiltersSelects);
+
     window.domComponents.mapFilters.removeAttribute('disabled');
     window.domComponents.formTextarea.removeAttribute('disabled');
     window.domComponents.formSubmit.removeAttribute('disabled');
+    window.domComponents.textInput.removeAttribute('disabled');
+    window.domComponents.avatarInput.removeAttribute('disabled');
+    window.domComponents.rentPrice.removeAttribute('disabled');
+    window.domComponents.rentImages.removeAttribute('disabled');
 
     window.domComponents.mainPin.removeEventListener('mousedown', mainPinMousedownHandler);
     window.domComponents.mainPin.removeEventListener('keydown', mainPinKeydownHandler);
+    window.domComponents.mainPin.removeEventListener('keydown', initMapActiveState);
+    window.domComponents.mainPin.removeEventListener('click', initMapActiveState);
+
+    window.domComponents.resetButton.addEventListener('click', setMapDefaultState);
+    window.domComponents.resetButton.addEventListener('keydown', setMapDefaultState);
+
+    window.domComponents.mapPinsArea.addEventListener('click', cardInitClickHandler);
+    window.domComponents.mapPinsArea.addEventListener('keydown', cardInitKeydownHandler);
   }
 
   window.pin.moveMainPin();
 
-  // Слушатели родительского модуля
   window.domComponents.mainPin.addEventListener('mousedown', mainPinMousedownHandler);
   window.domComponents.mainPin.addEventListener('keydown', mainPinKeydownHandler);
 
   // Вызываем нужную карточку товаров. Делегируем событие, проверяем пин ли это -
-  function cardInitClickHandler(cardInfo) {
+  function cardInitClickHandler() {
     window.domComponents.mapPinsArea.addEventListener('click', function (evt) {
-      window.card.createAppropriateCard(evt, cardInfo);
-    });
-  }
-
-  // Не работает, вероятно из-за closest. Рендер карточки по нажатию Enter на pin.
-  function cardInitKeydownHandler(cardInfo) {
-    document.addEventListener('keydown', function (evt) {
-      if (evt.key === 'Enter') {
-        window.card.createAppropriateCard(evt, cardInfo);
+      window.card.createAppropriateCard(evt, window.domComponents.adverts);
+      if (evt.target.closest('.map__pin')) {
+        evt.target.closest('.map__pin').classList.add('map__pin--active');
       }
     });
   }
 
-  window.domComponents.submitButton.addEventListener('click', validatorsHandler);
+  // Не работает, вероятно из-за closest. Рендер карточки по нажатию Enter на pin.
+  function cardInitKeydownHandler() {
+    document.addEventListener('keydown', function (evt) {
+      if (evt.key === 'Enter') {
+        window.card.createAppropriateCard(evt, window.domComponents.adverts);
+      }
+    });
+  }
 
   // Добавляем слушателя для инициализации карты, проверяем клик левой кнопкой
 
@@ -82,11 +124,21 @@
     }
   }
 
-  // Валидация
-  function submitButtonClickHandler() {
-    window.validators.compareNumberOfRoomsWithNumberOfGuests();
-    window.validators.checkMaxRentPrice(MAX_RENT_PRICE);
-    window.validators.checkFieldTextLength(window.domComponents.textInput, MIN_TEXT_LENGTH, MAX_TEXT_LENGTH);
+  // Валидация и отправка формы
+  function submitButtonClickHandler(evt) {
+    validatorsHandler();
+    if (window.domComponents.globalValidationMark === true) {
+      evt.preventDefault();
+      window.parseResponse.save(new FormData(window.domComponents.form), function () {
+        if (window.domComponents.validationMark === true) {
+          window.successUpload.handler();
+          window.domComponents.form.reset();
+          setMapDefaultState();
+        }
+      }, function () {
+        window.failedUpload.handler();
+      });
+    }
   }
 
   window.domComponents.mainPin.addEventListener('mousedown', mainPinMousedownHandler);
@@ -108,7 +160,13 @@
   function validatorsHandler() {
     window.validators.compareNumberOfRoomsWithNumberOfGuests();
     window.validators.checkMaxRentPrice(MAX_RENT_PRICE);
+    window.validators.setPropriateValue();
     window.validators.checkFieldTextLength(window.domComponents.textInput, MIN_TEXT_LENGTH, MAX_TEXT_LENGTH);
+    if (window.domComponents.validationMark === true &&
+      window.domComponents.validationMarkTextLength === true &&
+      window.domComponents.validationMarkMaxPrice === true) {
+      window.domComponents.globalValidationMark = true;
+    }
   }
 
   function formChangeHandler() {
@@ -117,14 +175,6 @@
 
   // Добавляем слушателя на форму для проверки соответствия в валидации
   window.domComponents.form.addEventListener('change', formChangeHandler);
-
-  // Добавляем слушателя на сабмит, если валидация успешна.
-  window.domComponents.form.addEventListener('submit', function (evt) {
-    evt.preventDefault();
-    if (window.domComponents.validationMark === true) {
-      window.domComponents.form.submit();
-    }
-  });
 
   window.domComponents.submitButton.addEventListener('click', submitButtonClickHandler);
 
