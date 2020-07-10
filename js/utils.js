@@ -28,15 +28,6 @@
       });
     },
 
-    // Добавляем/убираем атрибут disabled и required у контролов
-    controlsSetAttribute: function (controls) {
-      window.domComponents.textInput.setAttribute('required', 'required');
-      window.domComponents.rentPrice.setAttribute('required', 'required');
-      controls.forEach(function (control) {
-        control.setAttribute('disabled', 'disabled');
-      });
-    },
-
     controlsRemoveAttribute: function (controls) {
       controls.forEach(function (control) {
         control.removeAttribute('disabled');
@@ -146,6 +137,14 @@
           pin.classList.remove('map__pin--active');
         }
       });
+    },
+
+    removeElements: function (els) {
+      if (els) {
+        els.forEach(function (element) {
+          element.remove();
+        });
+      }
     }
   };
 })();
