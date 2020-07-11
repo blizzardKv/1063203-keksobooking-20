@@ -32,6 +32,7 @@
         element.remove();
       });
     }
+    window.utils.removeElements(activePins);
     window.domComponents.form.classList.add('ad-form--disabled');
 
     // Для второго и последующего запуска. Т.к. по дефолту висит слушатель, насильно убираем его и перевызываем.
@@ -84,6 +85,9 @@
 
     window.domComponents.mapPinsArea.addEventListener('click', cardInitClickHandler);
     window.domComponents.mapPinsArea.addEventListener('keydown', cardInitKeydownHandler);
+    var filters = document.querySelector('.map__filters');
+    var housingTypeFilter = filters.querySelector('[name=housing-type]');
+    housingTypeFilter.addEventListener('change', window.filters.filterAdverts);
   }
 
   window.pin.moveMainPin();
