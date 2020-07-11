@@ -27,6 +27,10 @@
   var resetButton = form.querySelector('.ad-form__reset');
   var filters = document.querySelector('.map__filters');
   var housingTypeFilter = filters.querySelector('[name=housing-type]');
+  var housingPriceFilter = filters.querySelector('[name=housing-price]');
+  var housingRoomsFilter = filters.querySelector('[name=housing-rooms]');
+  var housingGuestsFilter = filters.querySelector('[name=housing-guests]');
+  var housingFeaturesFilter = filters.querySelectorAll('[name=features]');
   var adverts = '';
   var validationMark = '';
   var validationMarkMaxPrice = '';
@@ -60,6 +64,10 @@
     resetButton: resetButton,
     filters: filters,
     housingTypeFilter: housingTypeFilter,
+    housingPriceFilter: housingPriceFilter,
+    housingRoomsFilter: housingRoomsFilter,
+    housingGuestsFilter: housingGuestsFilter,
+    housingFeaturesFilter: housingFeaturesFilter,
     adverts: adverts,
     validationMarkMaxPrice: validationMarkMaxPrice,
     validationMarkTextLength: validationMarkTextLength,
