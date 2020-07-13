@@ -93,7 +93,7 @@
     }
   }
 
-  // Не работает, вероятно из-за closest. Рендер карточки по нажатию Enter на pin.
+  // Рендер карточки по нажатию Enter на pin.
   function cardInitKeydownHandler(evt) {
     if (evt.key === 'Enter') {
       window.card.createAppropriateCard(evt, window.domComponents.adverts);
