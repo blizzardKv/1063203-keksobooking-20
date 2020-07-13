@@ -82,6 +82,7 @@
 
   // Вызываем нужную карточку товаров. Делегируем событие, проверяем пин ли это -
   function cardInitClickHandler(evt) {
+    window.utils.mapPinsHandler();
     window.card.createAppropriateCard(evt, window.domComponents.adverts);
     if (evt.target.closest('.map__pin')) {
       evt.target.closest('.map__pin').classList.add('map__pin--active');
@@ -90,6 +91,7 @@
 
   // Рендер карточки по нажатию Enter на pin.
   function cardInitKeydownHandler(evt) {
+    window.utils.mapPinsHandler();
     if (evt.key === 'Enter') {
       window.card.createAppropriateCard(evt, window.domComponents.adverts);
     }
