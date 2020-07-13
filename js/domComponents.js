@@ -6,6 +6,7 @@
   var checkInField = document.querySelector('#timein');
   var checkOutField = document.querySelector('#timeout');
   var form = document.querySelector('.ad-form');
+  var fieldsets = form.querySelectorAll('fieldset');
   var formInputElements = form.querySelectorAll('input');
   var formSelectElements = form.querySelectorAll('select');
   var formSubmit = form.querySelector('button[type="submit"]');
@@ -42,6 +43,7 @@
     checkInField: checkInField,
     checkOutField: checkOutField,
     form: form,
+    fieldsets: fieldsets,
     formInputElements: formInputElements,
     formSelectElements: formSelectElements,
     formSubmit: formSubmit,

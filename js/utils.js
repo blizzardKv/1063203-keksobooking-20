@@ -8,12 +8,6 @@
       return Math.floor(Math.random() * maxNumber + 1);
     },
 
-    // Выводим рандомный элемент в массиве. Для этого возвращаем элемент с i = 0 до i = array.length - 1;
-    // Т.к. Единица не входит в рандом, а Math.random(max) = 0,9 в периоде.
-    getRandomElementFromArray: function (array) {
-      return array[window.utils.getRandomNumber(array.length) - 1];
-    },
-
     // Получаем массив рандомной длины через Array.Of
     // Шаффлим дефолтный массив, чтобы значения перемешивались в каждой итерации
     // Возвращаем новый массив, начиная с первого элемента и до элемента с индексом emptyArray

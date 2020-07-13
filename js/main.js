@@ -10,15 +10,11 @@
     window.domComponents.rentPrice.setAttribute('required', 'required');
     window.domComponents.addressInput.setAttribute('readonly', 'readonly');
     window.domComponents.addressInput.setAttribute('placeholder', '570, 375');
-    window.domComponents.textInput.setAttribute('disabled', 'disabled');
-    window.domComponents.avatarInput.setAttribute('disabled', 'disabled');
-    window.domComponents.rentPrice.setAttribute('disabled', 'disabled');
-    window.domComponents.rentImages.setAttribute('disabled', 'disabled');
+    window.domComponents.fieldsets.forEach(function (fieldset) {
+      fieldset.setAttribute('disabled', 'disabled');
+    });
     window.utils.setCustomAttributeOnCollection(window.domComponents.mapFiltersSelects, 'disabled', 'disabled');
     window.utils.setCustomAttributeOnCollection(window.domComponents.mapFiltersInputs, 'disabled', 'disabled');
-    window.domComponents.mapFilters.setAttribute('disabled', 'disabled');
-    window.domComponents.formTextarea.setAttribute('disabled', 'disabled');
-    window.domComponents.formSubmit.setAttribute('disabled', 'disabled');
     // Чтобы не мозолило глаза, а то дефолтный плейсхолдер не соответствует дефолтному значению
     window.domComponents.rentPrice.setAttribute('placeholder', '1000');
 
@@ -67,13 +63,9 @@
     window.utils.controlsRemoveAttribute(window.domComponents.mapFiltersInputs);
     window.utils.controlsRemoveAttribute(window.domComponents.mapFiltersSelects);
 
-    window.domComponents.mapFilters.removeAttribute('disabled');
-    window.domComponents.formTextarea.removeAttribute('disabled');
-    window.domComponents.formSubmit.removeAttribute('disabled');
-    window.domComponents.textInput.removeAttribute('disabled');
-    window.domComponents.avatarInput.removeAttribute('disabled');
-    window.domComponents.rentPrice.removeAttribute('disabled');
-    window.domComponents.rentImages.removeAttribute('disabled');
+    window.domComponents.fieldsets.forEach(function (fieldset) {
+      fieldset.removeAttribute('disabled');
+    });
 
     window.domComponents.mainPin.removeEventListener('mousedown', mainPinMousedownHandler);
     window.domComponents.mainPin.removeEventListener('keydown', mainPinKeydownHandler);
@@ -94,22 +86,18 @@
   window.domComponents.mainPin.addEventListener('keydown', mainPinKeydownHandler);
 
   // Вызываем нужную карточку товаров. Делегируем событие, проверяем пин ли это -
-  function cardInitClickHandler() {
-    window.domComponents.mapPinsArea.addEventListener('click', function (evt) {
-      window.card.createAppropriateCard(evt, window.domComponents.adverts);
-      if (evt.target.closest('.map__pin')) {
-        evt.target.closest('.map__pin').classList.add('map__pin--active');
-      }
-    });
+  function cardInitClickHandler(evt) {
+    window.card.createAppropriateCard(evt, window.domComponents.adverts);
+    if (evt.target.closest('.map__pin')) {
+      evt.target.closest('.map__pin').classList.add('map__pin--active');
+    }
   }
 
   // Не работает, вероятно из-за closest. Рендер карточки по нажатию Enter на pin.
-  function cardInitKeydownHandler() {
-    document.addEventListener('keydown', function (evt) {
-      if (evt.key === 'Enter') {
-        window.card.createAppropriateCard(evt, window.domComponents.adverts);
-      }
-    });
+  function cardInitKeydownHandler(evt) {
+    if (evt.key === 'Enter') {
+      window.card.createAppropriateCard(evt, window.domComponents.adverts);
+    }
   }
 
   // Добавляем слушателя для инициализации карты, проверяем клик левой кнопкой
@@ -136,6 +124,7 @@
           window.successUpload.handler();
           window.domComponents.form.reset();
           setMapDefaultState();
+          window.domComponents.globalValidationMark = false;
         }
       }, function () {
         window.failedUpload.handler();

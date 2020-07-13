@@ -1,10 +1,10 @@
 'use strict';
 
 (function () {
-  var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
-  var mainPin = document.querySelector('.map__pin--main');
   var ALT_IMAGE_TEXT = 'Аватарка пользователя';
   var NUMBER_OF_PINS_TO_GENERATE = 5;
+  var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
+  var mainPin = document.querySelector('.map__pin--main');
 
   // Задаем координаты для поля адреса. Берем с помощью getBoundingRect значения по x,y, height и width пина.
   // Добавляем значения острия, высоту получаем из getComputedStyle
@@ -18,12 +18,12 @@
 
     // Добавляем функцию по настройке пинов. Клонируем имеющийся темплейт, выбираем в новом темплейте аватар по селектору.
     // Присваиваем значения left/top/src/alt, возвращаем новый пин
-    setPinOptions: function (data) {
+    setPinOptions: function (data, number) {
       var newPin = pinTemplate.cloneNode(true);
       var pinAvatar = newPin.querySelector('img');
-
       newPin.style =
         'left: ' + data.location.x + 'px; top: ' + data.location.y + 'px;';
+      newPin.dataset.id = number;
       pinAvatar.src = data.author.avatar;
       pinAvatar.alt = ALT_IMAGE_TEXT;
 
@@ -41,7 +41,7 @@
       var fragment = document.createDocumentFragment();
 
       for (var i = 0; i < NUMBER_OF_PINS_TO_GENERATE; i++) {
-        fragment.appendChild(window.pin.setPinOptions(randomArray[i]));
+        fragment.appendChild(window.pin.setPinOptions(randomArray[i], i));
       }
       window.domComponents.mapPinsArea.appendChild(fragment);
     },
