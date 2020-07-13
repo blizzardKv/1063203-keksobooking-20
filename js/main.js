@@ -10,12 +10,9 @@
     window.domComponents.rentPrice.setAttribute('required', 'required');
     window.domComponents.addressInput.setAttribute('readonly', 'readonly');
     window.domComponents.addressInput.setAttribute('placeholder', '570, 375');
-    window.domComponents.fieldsets.forEach(function (fieldset) {
-      fieldset.setAttribute('disabled', 'disabled');
-    });
+    window.utils.setCustomAttributeOnCollection(window.domComponents.fieldsets, 'disabled', 'disabled');
     window.utils.setCustomAttributeOnCollection(window.domComponents.mapFiltersSelects, 'disabled', 'disabled');
     window.utils.setCustomAttributeOnCollection(window.domComponents.mapFiltersInputs, 'disabled', 'disabled');
-    // Чтобы не мозолило глаза, а то дефолтный плейсхолдер не соответствует дефолтному значению
     window.domComponents.rentPrice.setAttribute('placeholder', '1000');
 
     if (!window.domComponents.map.classList.contains('map--faded')) {
@@ -63,9 +60,7 @@
     window.utils.controlsRemoveAttribute(window.domComponents.mapFiltersInputs);
     window.utils.controlsRemoveAttribute(window.domComponents.mapFiltersSelects);
 
-    window.domComponents.fieldsets.forEach(function (fieldset) {
-      fieldset.removeAttribute('disabled');
-    });
+    window.utils.controlsRemoveAttribute(window.domComponents.fieldsets);
 
     window.domComponents.mainPin.removeEventListener('mousedown', mainPinMousedownHandler);
     window.domComponents.mainPin.removeEventListener('keydown', mainPinKeydownHandler);

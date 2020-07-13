@@ -2,20 +2,6 @@
 
 (function () {
   window.utils = {
-    // Выводим рандомное число
-    // Добавляем +1 т.к. Math.floor округляет вниз, а Math.random(max) = 0,9 в периоде.
-    getRandomNumber: function (maxNumber) {
-      return Math.floor(Math.random() * maxNumber + 1);
-    },
-
-    // Получаем массив рандомной длины через Array.Of
-    // Шаффлим дефолтный массив, чтобы значения перемешивались в каждой итерации
-    // Возвращаем новый массив, начиная с первого элемента и до элемента с индексом emptyArray
-    getRandomNumberOfElementsFromArray: function (arr) {
-      var emptyArrayWithRandomLength = window.utils.getRandomNumber(arr.length);
-      return window.utils.shuffleArray(arr).slice(0, emptyArrayWithRandomLength);
-    },
-
     shuffleArray: function (arr) {
       return arr.sort(function () {
         return Math.random() - 0.5;
@@ -30,7 +16,6 @@
 
     // Проверяем наличие даты для рендера.
     // Если её нет или она undefined, то скрываем элемент, куда должна была отправиться дата.
-
     checkIsDataExists: function (data, el) {
       if (data.length === 0 || data.length === 'undefined') {
         el.style.display = 'none';
