@@ -101,7 +101,6 @@
   }
 
   // Добавляем слушателя для инициализации карты, проверяем клик левой кнопкой
-
   function mainPinMousedownHandler(evt) {
     if (evt.button === 0) {
       initMapActiveState();
