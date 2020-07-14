@@ -14,6 +14,12 @@
     window.utils.setCustomAttributeOnCollection(window.domComponents.mapFiltersSelects, 'disabled', 'disabled');
     window.utils.setCustomAttributeOnCollection(window.domComponents.mapFiltersInputs, 'disabled', 'disabled');
     window.domComponents.rentPrice.setAttribute('placeholder', '1000');
+    window.domComponents.mapFilters.reset();
+    var houseImage = document.querySelector('.house-photo');
+    if (houseImage && window.domComponents.previewAvatar) {
+      window.domComponents.previewAvatar.src = 'img/muffin-grey.svg';
+      houseImage.src = '';
+    }
 
     if (!window.domComponents.map.classList.contains('map--faded')) {
       window.domComponents.map.classList.add('map--faded');
@@ -167,18 +173,23 @@
 
   // Слушатель на изменение типа жилья и выставление соответствующей минимальной цены аренды
   window.domComponents.houseType.addEventListener('change', function () {
-    if (window.domComponents.houseType.value === 'bungalo') {
-      window.domComponents.rentPrice.min = 0;
-      window.domComponents.rentPrice.placeholder = 0;
-    } else if (window.domComponents.houseType.value === 'flat') {
-      window.domComponents.rentPrice.min = 1000;
-      window.domComponents.rentPrice.placeholder = 1000;
-    } else if (window.domComponents.houseType.value === 'house') {
-      window.domComponents.rentPrice.min = 5000;
-      window.domComponents.rentPrice.placeholder = 5000;
-    } else if (window.domComponents.houseType.value === 'palace') {
-      window.domComponents.rentPrice.min = 10000;
-      window.domComponents.rentPrice.placeholder = 10000;
+    switch (window.domComponents.rentPrice.min && window.domComponents.rentPrice.placeholder) {
+      case window.domComponents.houseType.value === 'bungalo':
+        window.domComponents.rentPrice.min = 0;
+        window.domComponents.rentPrice.placeholder = 0;
+        break;
+      case window.domComponents.houseType.value === 'flat':
+        window.domComponents.rentPrice.min = 1000;
+        window.domComponents.rentPrice.placeholder = 1000;
+        break;
+      case window.domComponents.houseType.value === 'house':
+        window.domComponents.rentPrice.min = 5000;
+        window.domComponents.rentPrice.placeholder = 5000;
+        break;
+      case window.domComponents.houseType.value === 'palace':
+        window.domComponents.rentPrice.min = 10000;
+        window.domComponents.rentPrice.placeholder = 10000;
+        break;
     }
   });
 

@@ -18,12 +18,12 @@
 
     // Добавляем функцию по настройке пинов. Клонируем имеющийся темплейт, выбираем в новом темплейте аватар по селектору.
     // Присваиваем значения left/top/src/alt, возвращаем новый пин
-    setPinOptions: function (data, number) {
+    setPinOptions: function (data) {
       var newPin = pinTemplate.cloneNode(true);
       var pinAvatar = newPin.querySelector('img');
       newPin.style =
         'left: ' + data.location.x + 'px; top: ' + data.location.y + 'px;';
-      newPin.dataset.id = number;
+      newPin.dataset.src = data.author.avatar;
       pinAvatar.src = data.author.avatar;
       pinAvatar.alt = ALT_IMAGE_TEXT;
 
@@ -41,7 +41,7 @@
       var fragment = document.createDocumentFragment();
 
       for (var i = 0; i < NUMBER_OF_PINS_TO_GENERATE; i++) {
-        fragment.appendChild(window.pin.setPinOptions(randomArray[i], i));
+        fragment.appendChild(window.pin.setPinOptions(randomArray[i]));
       }
       window.domComponents.mapPinsArea.appendChild(fragment);
     },

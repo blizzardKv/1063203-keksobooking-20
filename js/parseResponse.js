@@ -37,18 +37,15 @@
   }
 
   window.parseResponse = {
-    urlLoad: URL.LOAD,
-    urlSave: URL.SAVE,
-
     load: function (url, successHandler, errorHandler) {
       var xhr = initiateXHR(successHandler, errorHandler);
-      xhr.open('GET', window.parseResponse.urlLoad);
+      xhr.open('GET', URL.LOAD);
       xhr.send();
     },
 
     save: function (data, successHandler, errorHandler) {
       var xhr = initiateXHR(successHandler, errorHandler);
-      xhr.open('POST', window.parseResponse.urlSave);
+      xhr.open('POST', URL.SAVE);
       xhr.send(data);
     }
   };

@@ -32,6 +32,7 @@
   var housingRoomsFilter = filters.querySelector('[name=housing-rooms]');
   var housingGuestsFilter = filters.querySelector('[name=housing-guests]');
   var housingFeaturesFilter = filters.querySelectorAll('[name=features]');
+  var previewAvatar = document.querySelector('.ad-form-header__preview img');
   var adverts = '';
   var validationMark = '';
   var validationMarkMaxPrice = '';
@@ -70,6 +71,7 @@
     housingRoomsFilter: housingRoomsFilter,
     housingGuestsFilter: housingGuestsFilter,
     housingFeaturesFilter: housingFeaturesFilter,
+    previewAvatar: previewAvatar,
     adverts: adverts,
     validationMarkMaxPrice: validationMarkMaxPrice,
     validationMarkTextLength: validationMarkTextLength,

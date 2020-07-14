@@ -5,7 +5,6 @@
 
   var fileChooserAvatar = document.querySelector('#avatar');
   var fileChooserHousePhoto = document.querySelector('#images');
-  var previewAvatar = document.querySelector('.ad-form-header__preview img');
   var previewPhotoWrapper = document.querySelector('.ad-form__photo');
 
   function createImageTemplate() {
@@ -41,6 +40,6 @@
     });
   }
 
-  imageLoadHandler(fileChooserAvatar, previewAvatar);
+  imageLoadHandler(fileChooserAvatar, window.domComponents.previewAvatar);
   imageLoadHandler(fileChooserHousePhoto, houseImage);
 })();

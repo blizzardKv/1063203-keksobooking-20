@@ -107,10 +107,9 @@
 
     createAppropriateCard: function (evt, cardInfo) {
       if (evt.target.closest('.map__pin') && !evt.target.closest('.map__pin--main')) {
-        var pinAvatarId = evt.target.dataset.id || evt.target.closest('.map__pin').dataset.id;
+        var pinAvatarSrc = evt.target.dataset.src || evt.target.closest('.map__pin').dataset.src;
         for (var i = 0; i < cardInfo.length; i++) {
-          cardInfo.id = parseInt([i], 10);
-          if (+pinAvatarId === cardInfo.id) {
+          if (pinAvatarSrc === cardInfo[i].author.avatar) {
             window.card.fillCardWithInformation(cardInfo[i]);
             modalCloseHandler();
           }
