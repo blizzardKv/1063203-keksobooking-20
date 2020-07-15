@@ -188,7 +188,7 @@
         window.domComponents.rentPrice.min = 5000;
         window.domComponents.rentPrice.placeholder = 5000;
         break;
-      case window.domComponents.houseType.value === window.domComponents.roomTypes.PALACE:G
+      case window.domComponents.houseType.value === window.domComponents.roomTypes.PALACE:
         window.domComponents.rentPrice.min = 10000;
         window.domComponents.rentPrice.placeholder = 10000;
         break;
