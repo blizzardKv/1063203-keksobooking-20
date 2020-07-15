@@ -16,10 +16,9 @@
     window.domComponents.rentPrice.setAttribute('placeholder', '1000');
     window.domComponents.mapFilters.reset();
     var houseImage = document.querySelector('.house-photo');
-    window.picturesReader.createImageTemplate();
     if (houseImage && window.domComponents.previewAvatar) {
       window.domComponents.previewAvatar.src = 'img/muffin-grey.svg';
-      houseImage.remove();
+      houseImage.src = '';
     }
 
     if (!window.domComponents.map.classList.contains('map--faded')) {
