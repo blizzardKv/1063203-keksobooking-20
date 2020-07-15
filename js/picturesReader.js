@@ -7,16 +7,6 @@
   var fileChooserHousePhoto = document.querySelector('#images');
   var previewPhotoWrapper = document.querySelector('.ad-form__photo');
 
-  function createImageTemplate() {
-    var image = document.createElement('img');
-    image.setAttribute('src', ' ');
-    image.classList.add('house-photo');
-    image.style.cssText = 'width: 70px; height: 70px;';
-    previewPhotoWrapper.appendChild(image);
-  }
-
-  createImageTemplate();
-
   var houseImage = document.querySelector('.house-photo');
 
   function imageLoadHandler(imageInput, previewWindow) {
@@ -39,6 +29,16 @@
       }
     });
   }
+
+  window.picturesReader = {
+    createImageTemplate: function () {
+      var image = document.createElement('img');
+      image.setAttribute('src', ' ');
+      image.classList.add('house-photo');
+      image.style.cssText = 'width: 70px; height: 70px;';
+      previewPhotoWrapper.appendChild(image);
+    }
+  };
 
   imageLoadHandler(fileChooserAvatar, window.domComponents.previewAvatar);
   imageLoadHandler(fileChooserHousePhoto, houseImage);
