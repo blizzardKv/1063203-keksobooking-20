@@ -1,7 +1,20 @@
 'use strict';
 
 (function () {
-  // Вводим переменные
+  var ESCAPE_BUTTON = 'Escape';
+  var ENTER_BUTTON = 'Enter';
+  var roomTypes = {
+    ROOM: 'flat',
+    BUNGALO: 'bungalo',
+    HOUSE: 'house',
+    PALACE: 'palace'
+  };
+  var roomTypesTranslate = {
+    ROOM: 'Комната',
+    BUNGALO: 'Бунгало',
+    HOUSE: 'Дом',
+    PALACE: 'Дворец'
+  };
   var addressInput = document.querySelector('#address');
   var checkInField = document.querySelector('#timein');
   var checkOutField = document.querySelector('#timeout');
@@ -40,6 +53,10 @@
   var globalValidationMark = '';
 
   window.domComponents = {
+    ESCAPE_BUTTON: ESCAPE_BUTTON,
+    ENTER_BUTTON: ENTER_BUTTON,
+    roomTypes: roomTypes,
+    roomTypesTranslate: roomTypesTranslate,
     addressInput: addressInput,
     checkInField: checkInField,
     checkOutField: checkOutField,

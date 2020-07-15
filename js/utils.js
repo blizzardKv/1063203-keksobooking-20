@@ -30,20 +30,20 @@
     translateNamesOfHouses: function (house) {
       var translate = '';
       switch (house.offer.type) {
-        case 'flat':
-          translate = 'Комната';
+        case window.domComponents.roomTypes.ROOM:
+          translate = window.domComponents.roomTypesTranslate.ROOM;
           break;
 
-        case 'bungalo':
-          translate = 'Бунгало';
+        case window.domComponents.roomTypes.BUNGALO:
+          translate = window.domComponents.roomTypesTranslate.BUNGALO;
           break;
 
-        case 'house':
-          translate = 'Дом';
+        case window.domComponents.roomTypes.HOUSE:
+          translate = window.domComponents.roomTypesTranslate.HOUSE;
           break;
 
-        case 'palace':
-          translate = 'Дворец';
+        case window.domComponents.roomTypes.PALACE:
+          translate = window.domComponents.roomTypesTranslate.PALACE;
           break;
       }
 

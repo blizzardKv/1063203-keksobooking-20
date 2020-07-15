@@ -18,7 +18,7 @@
       }
 
       function successKeydownHandler(evt) {
-        if (evt.key === 'Escape') {
+        if (evt.key === window.domComponents.ESCAPE_BUTTON) {
           success.remove();
           document.removeEventListener('keydown', successKeydownHandler);
         }

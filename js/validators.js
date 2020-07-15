@@ -69,16 +69,16 @@
     },
 
     setPropriateValue: function () {
-      if (window.domComponents.houseType.value === 'bungalo') {
+      if (window.domComponents.houseType.value === window.domComponents.roomTypes.BUNGALO) {
         window.domComponents.rentPrice.min = 0;
         window.domComponents.rentPrice.placeholder = 0;
-      } else if (window.domComponents.houseType.value === 'flat') {
+      } else if (window.domComponents.houseType.value === window.domComponents.roomTypes.ROOM) {
         window.domComponents.rentPrice.min = 1000;
         window.domComponents.rentPrice.placeholder = 1000;
-      } else if (window.domComponents.houseType.value === 'house') {
+      } else if (window.domComponents.houseType.value === window.domComponents.roomTypes.HOUSE) {
         window.domComponents.rentPrice.min = 5000;
         window.domComponents.rentPrice.placeholder = 5000;
-      } else if (window.domComponents.houseType.value === 'palace') {
+      } else if (window.domComponents.houseType.value === window.domComponents.roomTypes.PALACE) {
         window.domComponents.rentPrice.min = 10000;
         window.domComponents.rentPrice.placeholder = 10000;
       }

@@ -37,6 +37,9 @@
   }
 
   window.parseResponse = {
+    urlLoad: URL.LOAD,
+    urlSave: URL.SAVE,
+
     load: function (url, successHandler, errorHandler) {
       var xhr = initiateXHR(successHandler, errorHandler);
       xhr.open('GET', URL.LOAD);

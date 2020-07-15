@@ -3,6 +3,7 @@
   var MAX_RENT_PRICE = 1000000;
   var MIN_TEXT_LENGTH = 30;
   var MAX_TEXT_LENGTH = 100;
+  var LEFT_CLICK_ID = 0;
 
   // Задаем дефолтное состояние для карты и сразу же вызываем функцию
   function setMapDefaultState() {
@@ -18,7 +19,8 @@
     var houseImage = document.querySelector('.house-photo');
     if (houseImage && window.domComponents.previewAvatar) {
       window.domComponents.previewAvatar.src = 'img/muffin-grey.svg';
-      houseImage.src = '';
+      // Поставлю заглушку с маффином
+      houseImage.src = 'img/muffin-grey.svg';
     }
 
     if (!window.domComponents.map.classList.contains('map--faded')) {
@@ -97,21 +99,21 @@
 
   // Рендер карточки по нажатию Enter на pin.
   function cardInitKeydownHandler(evt) {
-    window.utils.mapPinsHandler();
-    if (evt.key === 'Enter') {
+    if (evt.key === window.domComponents.ENTER_BUTTON) {
+      window.utils.mapPinsHandler();
       window.card.createAppropriateCard(evt, window.domComponents.adverts);
     }
   }
 
   // Добавляем слушателя для инициализации карты, проверяем клик левой кнопкой
   function mainPinMousedownHandler(evt) {
-    if (evt.button === 0) {
+    if (evt.button === LEFT_CLICK_ID) {
       initMapActiveState();
     }
   }
 
   function mainPinKeydownHandler(evt) {
-    if (evt.key === 'Enter') {
+    if (evt.key === window.domComponents.ENTER_BUTTON) {
       initMapActiveState();
     }
   }
@@ -174,19 +176,19 @@
   // Слушатель на изменение типа жилья и выставление соответствующей минимальной цены аренды
   window.domComponents.houseType.addEventListener('change', function () {
     switch (window.domComponents.rentPrice.min && window.domComponents.rentPrice.placeholder) {
-      case window.domComponents.houseType.value === 'bungalo':
+      case window.domComponents.houseType.value === window.domComponents.roomTypes.BUNGALO:
         window.domComponents.rentPrice.min = 0;
         window.domComponents.rentPrice.placeholder = 0;
         break;
-      case window.domComponents.houseType.value === 'flat':
+      case window.domComponents.houseType.value === window.domComponents.roomTypes.ROOM:
         window.domComponents.rentPrice.min = 1000;
         window.domComponents.rentPrice.placeholder = 1000;
         break;
-      case window.domComponents.houseType.value === 'house':
+      case window.domComponents.houseType.value === window.domComponents.roomTypes.HOUSE:
         window.domComponents.rentPrice.min = 5000;
         window.domComponents.rentPrice.placeholder = 5000;
         break;
-      case window.domComponents.houseType.value === 'palace':
+      case window.domComponents.houseType.value === window.domComponents.roomTypes.PALACE:G
         window.domComponents.rentPrice.min = 10000;
         window.domComponents.rentPrice.placeholder = 10000;
         break;

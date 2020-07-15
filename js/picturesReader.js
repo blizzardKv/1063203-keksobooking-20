@@ -9,7 +9,7 @@
 
   function createImageTemplate() {
     var image = document.createElement('img');
-    image.setAttribute('src', ' ');
+    image.setAttribute('src', 'img/muffin-grey.svg');
     image.classList.add('house-photo');
     image.style.cssText = 'width: 70px; height: 70px;';
     previewPhotoWrapper.appendChild(image);
